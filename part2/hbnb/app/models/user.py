@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import re
-from app.models.base_model import BaseModel
+from app.models.base import BaseModel
 
 
 class User(BaseModel):
