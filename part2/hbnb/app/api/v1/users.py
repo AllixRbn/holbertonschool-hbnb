@@ -55,3 +55,18 @@ class UserResource(Resource):
             'last_name': updated_user.last_name,
             'email': updated_user.email
         }, 200
+
+@api.route('/users/')
+class UsersList(Resource):
+    def get(self):
+        """Get a list of all users"""
+        users = facade.get_all_users()  # Crée cette méthode dans le facade
+        result = []
+        for user in users:
+            result.append({
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            })
+        return result, 200
