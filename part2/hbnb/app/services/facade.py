@@ -35,15 +35,11 @@ class HBnBFacade:
     def get_all_users(self):
         return self.user_repo.get_all()
 
-    # services/facade.py
-
     def update_user(self, user_id, new_data):
-        # Récupère l'utilisateur existant
         user = self.get_user(user_id)
         if not user:
             return None
 
-    # Met à jour les attributs si fournis
         if 'first_name' in new_data:
             user.first_name = new_data['first_name']
         if 'last_name' in new_data:
@@ -51,8 +47,7 @@ class HBnBFacade:
         if 'email' in new_data:
             user.email = new_data['email']
 
-    # Sauvegarde dans le repository
-        self.user_repo.update(user_id, user)  # Assure-toi que ton repo a une méthode `update`
+        self.user_repo.update(user_id, new_data)  # Assure-toi que ton repo a une méthode `update`
         return user
 
     # Placeholder method for fetching a place by ID
