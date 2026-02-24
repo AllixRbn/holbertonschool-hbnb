@@ -6,6 +6,7 @@ and Persistence layers
 
 
 from app.persistence.repository import InMemoryRepository
+from app.models.user import User
 
 
 class HBnBFacade:
