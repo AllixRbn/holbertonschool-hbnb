@@ -29,6 +29,14 @@ class UserList(Resource):
         new_user = facade.create_user(user_data)
         return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
 
+    def get(self):
+        """Get a list of all users"""
+        users = facade.get_all_users()
+        return [
+            {'id': u.id, 'first_name': u.first_name, 'last_name': u.last_name, 'email': u.email}
+            for u in users
+        ], 200
+
 @api.route('/<user_id>')
 class UserResource(Resource):
     @api.response(200, 'User details retrieved successfully')
@@ -55,18 +63,3 @@ class UserResource(Resource):
             'last_name': updated_user.last_name,
             'email': updated_user.email
         }, 200
-
-@api.route('/users/')
-class UsersList(Resource):
-    def get(self):
-        """Get a list of all users"""
-        users = facade.get_all_users()  # Crée cette méthode dans le facade
-        result = []
-        for user in users:
-            result.append({
-                'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email
-            })
-        return result, 200
