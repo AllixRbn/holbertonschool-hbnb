@@ -44,7 +44,7 @@ class PlaceList(Resource):
                 "price": place.price,
                 "latitude": place.latitude,
                 "longitude": place.longitude,
-                "owner_id": place.owner_id
+                "owner_id": place.owner.id
             }, 201
 
         except ValueError as e:
@@ -72,13 +72,10 @@ class PlaceResource(Resource):
     def get(self, place_id):
         """Get place details by ID"""
 
-        result = facade.get_place(place_id)
-        if not result:
-            return {"error": "Place not found"}, 404
+        place = facade.get_place(place_id)
 
-        place = result["place"]
-        owner = result["owner"]
-        amenities = result["amenities"]
+        if not place:
+            return {"error": "Place not found"}, 404
 
         return {
             "id": place.id,
@@ -88,17 +85,17 @@ class PlaceResource(Resource):
             "latitude": place.latitude,
             "longitude": place.longitude,
             "owner": {
-                "id": owner.id,
-                "first_name": owner.first_name,
-                "last_name": owner.last_name,
-                "email": owner.email
+                "id": place.owner.id,
+                "first_name": place.owner.first_name,
+                "last_name": place.owner.last_name,
+                "email": place.owner.email
             },
             "amenities": [
                 {
                     "id": amenity.id,
                     "name": amenity.name
                 }
-                for amenity in amenities
+                for amenity in place.amenities
             ]
         }, 200
 
