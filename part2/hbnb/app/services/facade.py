@@ -55,38 +55,26 @@ class HBnBFacade:
         if not owner:
             raise ValueError("Owner not found")
 
-        amenities = []
-        for amenity_id in place_data["amenities"]:
-            amenity = self.amenity_repo.get(amenity_id)
-            if not amenity:
-                raise ValueError("Amenity not found")
-            amenities.append(amenity)
-
         place = Place(
             title=place_data["title"],
             description=place_data.get("description"),
             price=place_data["price"],
             latitude=place_data["latitude"],
             longitude=place_data["longitude"],
-            owner_id=place_data["owner_id"],
-            amenities=amenities
+            owner=owner
         )
+
+        for amenity_id in place_data["amenities"]:
+            amenity = self.amenity_repo.get(amenity_id)
+            if not amenity:
+                raise ValueError("Amenity not found")
+            place.add_amenity(amenity)
 
         self.place_repo.add(place)
         return place
 
     def get_place(self, place_id):
-        place = self.place_repo.get(place_id)
-        if not place:
-            return None
-
-        owner = self.user_repo.get(place.owner_id)
-
-        return {
-            "place": place,
-            "owner": owner,
-            "amenities": place.amenities
-        }
+        return self.place_repo.get(place_id)
 
     def get_all_places(self):
         return self.place_repo.get_all()
@@ -98,10 +86,24 @@ class HBnBFacade:
 
         if "title" in place_data:
             place.title = place_data["title"]
+
         if "description" in place_data:
             place.description = place_data["description"]
+
         if "price" in place_data:
+            if place_data["price"] <= 0:
+                raise ValueError("Price must be positive")
             place.price = place_data["price"]
+
+        if "latitude" in place_data:
+            if not (-90 <= place_data["latitude"] <= 90):
+                raise ValueError("Invalid latitude")
+            place.latitude = place_data["latitude"]
+
+        if "longitude" in place_data:
+            if not (-180 <= place_data["longitude"] <= 180):
+                raise ValueError("Invalid longitude")
+            place.longitude = place_data["longitude"]
 
         return place
 
