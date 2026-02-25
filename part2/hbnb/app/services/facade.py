@@ -50,9 +50,59 @@ class HBnBFacade:
         self.user_repo.update(user_id, new_data)
         return user
 
-    # Placeholder method for fetching a place by ID
+    def create_place(self, place_data):
+        owner = self.user_repo.get(place_data["owner_id"])
+        if not owner:
+            raise ValueError("Owner not found")
+
+        amenities = []
+        for amenity_id in place_data["amenities"]:
+            amenity = self.amenity_repo.get(amenity_id)
+            if not amenity:
+                raise ValueError("Amenity not found")
+            amenities.append(amenity)
+
+        place = Place(
+            title=place_data["title"],
+            description=place_data.get("description"),
+            price=place_data["price"],
+            latitude=place_data["latitude"],
+            longitude=place_data["longitude"],
+            owner_id=place_data["owner_id"],
+            amenities=amenities
+        )
+
+        self.place_repo.add(place)
+        return place
+
     def get_place(self, place_id):
-        # Logic will be implemented in later tasks
-        pass
+        place = self.place_repo.get(place_id)
+        if not place:
+            return None
+
+        owner = self.user_repo.get(place.owner_id)
+
+        return {
+            "place": place,
+            "owner": owner,
+            "amenities": place.amenities
+        }
+
+    def get_all_places(self):
+        return self.place_repo.get_all()
+
+    def update_place(self, place_id, place_data):
+        place = self.place_repo.get(place_id)
+        if not place:
+            return None
+
+        if "title" in place_data:
+            place.title = place_data["title"]
+        if "description" in place_data:
+            place.description = place_data["description"]
+        if "price" in place_data:
+            place.price = place_data["price"]
+
+        return place
 
 facade = HBnBFacade()
