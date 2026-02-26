@@ -42,7 +42,7 @@ class HBnBFacade:
         for key in ['first_name', 'last_name', 'email']:
             if key in new_data:
                 setattr(user, key, new_data[key])
-        
+
         self.user_repo.update(user_id, new_data)
         return user
 
@@ -111,24 +111,57 @@ class HBnBFacade:
                     raise ValueError(f"Amenity {amenity_id} not found")
                 place.add_amenity(amenity)
 
-        self.place_repo.update(place_id, {})
+        self.place_repo.update(place_id, place_data)
         return place
 
     def create_review(self, review_data):
-        pass
+        user = self.user_repo.get(review_data["user_id"])
+        if not user:
+            raise ValueError("User not found")
+        place = self.place_repo.get(review_data["place_id"])
+        if not place:
+            raise ValueError("Place not found")
+        rating = review_data.get("rating")
+        if not isinstance(rating, int) or not (1 <= rating <= 5):
+            raise ValueError("Rating invalid")
+        text = review_data.get("text", "")
+        review = Review(user=user, place=place, rating=rating, text=text)
+        self.review_repo.add(review)
+        return review
 
     def get_review(self, review_id):
-        pass
+        return self.review_repo.get(review_id)
 
     def get_all_reviews(self):
-        pass
+        return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        pass
+        place = self.place_repo.get(place_id)
+        if not place:
+            return None
+        reviews = self.review_repo.get_all()
+        return [review for review in reviews if review.place.id == place_id]
 
     def update_review(self, review_id, review_data):
-        pass
+        review = self.review_repo.get(review_id)
+        if not review:
+            return None
+        if "text" in review_data:
+            text = review_data["text"]
+            if not isinstance(text, str):
+                raise ValueError("Text is invalid")
+            review.text = text
+        if "rating" in review_data:
+            rating = review_data["rating"]
+            if not isinstance(rating, int) or not (1 <= rating <= 5):
+                raise ValueError("Rating is invalid")
+            review.rating = rating
+        self.review_repo.update(review_id, review_data)
+        return review
 
     def delete_review(self, review_id):
-        # Placeholder for logic to delete a review
-        pass
+        review = self.review_repo.get(review_id)
+        if not review:
+            return False
+        self.review_repo.delete(review_id)
+        return True
