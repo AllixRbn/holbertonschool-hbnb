@@ -104,7 +104,7 @@ class HBnBFacade:
             return None
 
         if "amenities" in place_data:
-            place._amenities = []
+            place.clear_amenities()
             for amenity_id in place_data["amenities"]:
                 amenity = self.amenity_repo.get(amenity_id)
                 if not amenity:
@@ -121,15 +121,15 @@ class HBnBFacade:
         place = self.place_repo.get(review_data["place_id"])
         if not place:
             raise ValueError("Place not found")
-        rating = review_data.get("rating")
-        if not isinstance(rating, int) or not (1 <= rating <= 5):
-            raise ValueError("Rating invalid")
-        text = review_data.get("text")
-        if not isinstance(text, str):
-            raise ValueError("Text is invalid")
-        review = Review(user=user, place=place, rating=rating, text=text)
+
+        review = Review(
+            text=review_data["text"],
+            rating=review_data["rating"],
+            place=place,
+            user=user
+        )
+
         self.review_repo.add(review)
-        place.add_review(review)
         return review
 
     def get_review(self, review_id):
@@ -149,16 +149,11 @@ class HBnBFacade:
         review = self.review_repo.get(review_id)
         if not review:
             return None
-        if "text" in review_data:
-            text = review_data["text"]
-            if not isinstance(text, str):
-                raise ValueError("Text is invalid")
-            review.text = text
-        if "rating" in review_data:
-            rating = review_data["rating"]
-            if not isinstance(rating, int) or not (1 <= rating <= 5):
-                raise ValueError("Rating is invalid")
-            review.rating = rating
+
+        for key in ["text", "rating"]:
+            if key in review_data:
+                setattr(review, key, review_data[key])
+
         self.review_repo.update(review_id, review_data)
         return review
 

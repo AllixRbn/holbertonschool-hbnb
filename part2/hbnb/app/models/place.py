@@ -100,3 +100,6 @@ class Place(BaseModel):
 
     def add_amenity(self, amenity):
         self._amenities.append(amenity)
+
+    def clear_amenities(self):
+        self._amenities.clear()
