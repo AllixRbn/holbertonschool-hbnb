@@ -129,5 +129,41 @@ class HBnBFacade:
         self.place_repo.update(place_id, place_data)
         return place
 
+    def create_review(self, review_data):
+        user = self.user_repo.get(review_data["user_id"])
+        if not user:
+            raise ValueError("User not found")
+        place = self.place_repo.get(review_data["place_id"])
+        if not place:
+            raise ValueError("Place not found")
+        rating = review_data.get("rating")
+        if not isinstance(rating, int) or not (1 <= rating <= 5):
+            raise ValueError("Rating invalid")
+        comment = review_data.get("comment", "")
+        review = Review(user=user, place=place, rating=rating, comment=comment)
+        self.review_repo.add(review)
+        return review
+
+    def get_review(self, review_id):
+        return self.review_repo.get(review_id)
+
+    def get_all_reviews(self):
+        return self.review_repo.get_all()
+
+    def get_reviews_by_place(self, place_id):
+        return self.review_repo.get_by_attribute('place_id', place_id)
+        if not place:
+            return None
+
+    def update_review(self, review_id, review_data):
+        review = self.review_repo.get(review_id)
+        if not review:
+            return None
+        if 
+
+    def delete_review(self, review_id):
+        # Placeholder for logic to delete a review
+        pass
+
 
 facade = HBnBFacade()
