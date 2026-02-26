@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from part2.hbnb.app.models import review
+from app.models import review
 
 api = Namespace('reviews', description='Review operations')
 
