@@ -12,7 +12,6 @@ from app.models.review import Review
 from app.models.amenity import Amenity
 
 
-
 class HBnBFacade:
     def __init__(self):
         self.user_repo = InMemoryRepository()
@@ -49,6 +48,28 @@ class HBnBFacade:
 
         self.user_repo.update(user_id, new_data)
         return user
+
+    def create_amenity(self, amenity_data):
+        amenity = Amenity(**amenity_data)
+        self.amenity_repo.add(amenity)
+        return amenity
+
+    def get_amenity(self, amenity_id):
+        return self.amenity_repo.get(amenity_id)
+
+    def get_all_amenities(self):
+        return self.amenity_repo.get_all()
+
+    def update_amenity(self, amenity_id, amenity_data):
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            return None
+
+        if 'name' in amenity_data:
+            amenity.name = amenity_data['name']
+
+        self.amenity_repo.update(amenity_id, amenity_data)
+        return amenity
 
     def create_place(self, place_data):
         owner = self.user_repo.get(place_data["owner_id"])
@@ -105,6 +126,44 @@ class HBnBFacade:
                 raise ValueError("Invalid longitude")
             place.longitude = place_data["longitude"]
 
+        self.place_repo.update(place_id, place_data)
         return place
+
+    def create_review(self, review_data):
+        user = self.user_repo.get(review_data["user_id"])
+        if not user:
+            raise ValueError("User not found")
+        place = self.place_repo.get(review_data["place_id"])
+        if not place:
+            raise ValueError("Place not found")
+        rating = review_data.get("rating")
+        if not isinstance(rating, int) or not (1 <= rating <= 5):
+            raise ValueError("Rating invalid")
+        comment = review_data.get("comment", "")
+        review = Review(user=user, place=place, rating=rating, comment=comment)
+        self.review_repo.add(review)
+        return review
+
+    def get_review(self, review_id):
+        return self.review_repo.get(review_id)
+
+    def get_all_reviews(self):
+        return self.review_repo.get_all()
+
+    def get_reviews_by_place(self, place_id):
+        return self.review_repo.get_by_attribute('place_id', place_id)
+        if not place:
+            return None
+
+    def update_review(self, review_id, review_data):
+        review = self.review_repo.get(review_id)
+        if not review:
+            return None
+        if 
+
+    def delete_review(self, review_id):
+        # Placeholder for logic to delete a review
+        pass
+
 
 facade = HBnBFacade()
