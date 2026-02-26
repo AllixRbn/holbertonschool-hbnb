@@ -27,6 +27,7 @@ place_model = api.model('Place', {
     'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
+
 @api.route('/')
 class PlaceList(Resource):
     @api.expect(place_model)
@@ -64,6 +65,7 @@ class PlaceList(Resource):
             }
             for p in places
         ], 200
+
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
@@ -116,3 +118,23 @@ class PlaceResource(Resource):
 
         except ValueError as e:
             return {"error": str(e)}, 400
+
+
+@api.route('/<place_id>/reviews')
+class PlaceReviewList(Resource):
+    @api.response(200, 'List of reviews for the place retrieved successfully')
+    @api.response(404, 'Place not found')
+    def get(self, place_id):
+        """Get all reviews for a specific place"""
+        reviews = facade.get_reviews_by_place(place_id)
+        if reviews is None:
+            return {"error": "Place not found"}, 404
+
+        return [
+            {
+                "id": r.id,
+                "text": r.text,
+                "rating": r.rating
+            }
+            for r in reviews
+        ], 200
