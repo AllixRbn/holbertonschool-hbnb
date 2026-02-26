@@ -124,9 +124,12 @@ class HBnBFacade:
         rating = review_data.get("rating")
         if not isinstance(rating, int) or not (1 <= rating <= 5):
             raise ValueError("Rating invalid")
-        text = review_data.get("text", "")
+        text = review_data.get("text")
+        if not isinstance(text, str):
+            raise ValueError("Text is invalid")
         review = Review(user=user, place=place, rating=rating, text=text)
         self.review_repo.add(review)
+        place.add_review(review)
         return review
 
     def get_review(self, review_id):
