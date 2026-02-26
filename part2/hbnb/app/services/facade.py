@@ -39,13 +39,10 @@ class HBnBFacade:
         if not user:
             return None
 
-        if 'first_name' in new_data:
-            user.first_name = new_data['first_name']
-        if 'last_name' in new_data:
-            user.last_name = new_data['last_name']
-        if 'email' in new_data:
-            user.email = new_data['email']
-
+        for key in ['first_name', 'last_name', 'email']:
+            if key in new_data:
+                setattr(user, key, new_data[key])
+        
         self.user_repo.update(user_id, new_data)
         return user
 
@@ -85,10 +82,11 @@ class HBnBFacade:
             owner=owner
         )
 
-        for amenity_id in place_data["amenities"]:
+        amenities_ids = place_data.get("amenities", [])
+        for amenity_id in amenities_ids:
             amenity = self.amenity_repo.get(amenity_id)
             if not amenity:
-                raise ValueError("Amenity not found")
+                raise ValueError(f"Amenity {amenity_id} not found")
             place.add_amenity(amenity)
 
         self.place_repo.add(place)
@@ -105,28 +103,15 @@ class HBnBFacade:
         if not place:
             return None
 
-        if "title" in place_data:
-            place.title = place_data["title"]
+        if "amenities" in place_data:
+            place._amenities = []
+            for amenity_id in place_data["amenities"]:
+                amenity = self.amenity_repo.get(amenity_id)
+                if not amenity:
+                    raise ValueError(f"Amenity {amenity_id} not found")
+                place.add_amenity(amenity)
 
-        if "description" in place_data:
-            place.description = place_data["description"]
-
-        if "price" in place_data:
-            if place_data["price"] <= 0:
-                raise ValueError("Price must be positive")
-            place.price = place_data["price"]
-
-        if "latitude" in place_data:
-            if not (-90 <= place_data["latitude"] <= 90):
-                raise ValueError("Invalid latitude")
-            place.latitude = place_data["latitude"]
-
-        if "longitude" in place_data:
-            if not (-180 <= place_data["longitude"] <= 180):
-                raise ValueError("Invalid longitude")
-            place.longitude = place_data["longitude"]
-
-        self.place_repo.update(place_id, place_data)
+        self.place_repo.update(place_id, {})
         return place
 
     def create_review(self, review_data):
