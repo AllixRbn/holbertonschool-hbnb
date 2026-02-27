@@ -11,6 +11,7 @@ user_model = api.model('User', {
     'email': fields.String(required=True, description='Email of the user')
 })
 
+
 @api.route('/')
 class UserList(Resource):
     @api.expect(user_model, validate=True)
@@ -21,13 +22,20 @@ class UserList(Resource):
         """Register a new user"""
         user_data = api.payload
 
-        # Simulate email uniqueness check (to be replaced by real validation with persistence)
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
             return {'error': 'Email already registered'}, 400
 
-        new_user = facade.create_user(user_data)
-        return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
+        try:
+            new_user = facade.create_user(user_data)
+            return {
+                'id': new_user.id,
+                'first_name': new_user.first_name,
+                'last_name': new_user.last_name,
+                'email': new_user.email
+            }, 201
+        except ValueError as e:
+            return {'error': str(e)}, 400
 
     def get(self):
         """Get a list of all users"""
@@ -36,6 +44,7 @@ class UserList(Resource):
             {'id': u.id, 'first_name': u.first_name, 'last_name': u.last_name, 'email': u.email}
             for u in users
         ], 200
+
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -54,12 +63,18 @@ class UserResource(Resource):
     def put(self, user_id):
         """Update a user's information"""
         new_data = api.payload
-        updated_user = facade.update_user(user_id, new_data)
-        if not updated_user:
-            return {'error': 'User not found'}, 404
-        return {
-            'id': updated_user.id,
-            'first_name': updated_user.first_name,
-            'last_name': updated_user.last_name,
-            'email': updated_user.email
-        }, 200
+
+        try:
+            updated_user = facade.update_user(user_id, new_data)
+            if not updated_user:
+                return {'error': 'User not found'}, 404
+
+            return {
+                'id': updated_user.id,
+                'first_name': updated_user.first_name,
+                'last_name': updated_user.last_name,
+                'email': updated_user.email
+            }, 200
+
+        except ValueError as e:
+            return {'error': str(e)}, 400
