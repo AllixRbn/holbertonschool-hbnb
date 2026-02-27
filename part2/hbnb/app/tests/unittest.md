@@ -114,6 +114,7 @@ user_id and place_id reference existing entities
 
 All unit tests pass successfully:
 
+```bash
 @AllixRbn ➜ /workspaces/holbertonschool-hbnb/part2/hbnb (dev) $ python -m unittest discover -s app/tests -p "test_*.py"
 .........................
 ----------------------------------------------------------------------
@@ -123,6 +124,7 @@ OK
 
 Total tests executed: 25
 All tests passed: 25/25
+```
 
 ## Conclusion
 
