@@ -5,6 +5,8 @@ and Persistence layers
 """
 
 
+from email.mime import text
+
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place
@@ -126,7 +128,12 @@ class HBnBFacade:
         place = self.place_repo.get(review_data["place_id"])
         if not place:
             raise ValueError("Place not found")
-
+        text = review_data.get("text")
+        if not isinstance(text, str) or not text.strip():
+            raise ValueError("Invalid input data")
+        rating = review_data.get("rating")
+        if not isinstance(rating, int) or not (1 <= rating <= 5):
+            raise ValueError("Invalid input data")
         review = Review(
             text=review_data["text"],
             rating=review_data["rating"],
