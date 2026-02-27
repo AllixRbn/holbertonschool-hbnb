@@ -1,130 +1,190 @@
-# HBnB — Project Setup and Package Initialization (Part 2)
+````md
+# HBnB — Part 2 (Flask-RESTX API)
 
 ## Overview
-This part sets up a clean and modular foundation for the HBnB application using a layered architecture:
+HBnB is a simplified Airbnb-like application. Part 2 implements a layered architecture with:
+- **Presentation layer**: REST API built with **Flask** and **Flask-RESTX**
+- **Business logic layer**: core models + validation
+- **Persistence layer**: **in-memory repository** (to be replaced later by a database with SQL Alchemy)
 
-- **Presentation layer**: Flask-RESTx API endpoints (`app/api/`)
-- **Business logic layer**: core models (`app/models/`) and orchestration through a **Facade** (`app/services/`)
-- **Persistence layer**: an **in-memory repository** (`app/persistence/`) that will later be replaced by a database-backed solution with SQLAlchemy
-
-At this stage, the application runs but API routes and business logic methods are still placeholders.
+Swagger documentation is available at:
+- `http://127.0.0.1:5000/api/v1/`
 
 ---
 
 ## Project Structure
-
-hbnb/
+```text
+part2/hbnb/
 ├── app/
-│ ├── init.py
-│ ├── api/
-│ │ ├── init.py
-│ │ └── v1/
-│ │ ├── init.py
-│ │ ├── users.py
-│ │ ├── places.py
-│ │ ├── reviews.py
-│ │ └── amenities.py
-│ ├── models/
-│ │ ├── init.py
-│ │ ├── user.py
-│ │ ├── place.py
-│ │ ├── review.py
-│ │ └── amenity.py
-│ ├── services/
-│ │ ├── init.py
-│ │ └── facade.py
-│ └── persistence/
-│ ├── init.py
-│ └── repository.py
-├── run.py
+│   ├── __init__.py
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── v1/
+│   │       ├── __init__.py
+│   │       ├── amenities.py
+│   │       ├── places.py
+│   │       ├── reviews.py
+│   │       └── users.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── amenity.py
+│   │   ├── base.py
+│   │   ├── place.py
+│   │   ├── review.py
+│   │   └── user.py
+│   ├── persistence/
+│   │   ├── __init__.py
+│   │   └── repository.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── facade.py
+│   └── tests/
+│       ├── curl_test.md
+│       ├── test_amenities.py
+│       ├── test_places.py
+│       ├── test_reviews.py
+│       ├── test_users.py
+│       └── unittest.md
 ├── config.py
+├── README.md
 ├── requirements.txt
-└── README.md
+└── run.py
 
+````
 
-### What each folder/file is for
+---
 
-#### `app/`
-Main application package.
+## Architecture
 
-- `app/__init__.py`
-  - Creates the Flask application using an **application factory** (`create_app()`).
-  - Initializes Flask-RESTx and Swagger documentation at `/api/v1/`.
-  - Namespaces will be registered later.
+The application follows a **3-layer design**:
 
-#### `app/api/`
-Presentation layer (HTTP API).
+* **API (Flask-RESTX)** → receives HTTP requests, returns JSON responses
+* **Facade (`HBnBFacade`)** → centralizes business operations and orchestration
+* **Repository (InMemoryRepository)** → stores objects in memory
 
-- `app/api/v1/`
-  - Versioned API structure.
-  - Placeholder modules (`users.py`, `places.py`, `reviews.py`, `amenities.py`)
+Flow:
 
-#### `app/models/`
-Business logic models.
+```text
+API → Facade → Models / Repository
+```
 
-- Placeholder classes and modules for:
-  - `user.py`, `place.py`, `review.py`, `amenity.py`
-- Full logic will be implemented later.
+---
 
-#### `app/services/`
-Service layer that implements the **Facade pattern**.
+## Business Models and Validation (Summary)
 
-- `facade.py`
-  - Defines `HBnBFacade`, which centralizes interactions between:
-    - API layer (presentation)
-    - Models (business logic)
-    - Repository (persistence)
-  - Contains placeholder methods for now.
-- `services/__init__.py`
-  - Creates a single shared instance of the facade which acts like a singleton for the app.
+* **User**
 
-#### `app/persistence/`
-Persistence layer (storage abstraction).
+  * `first_name`, `last_name`, `email`: required and non-empty
+  * `email`: valid format + unique
+* **Amenity**
 
-- `repository.py`
-  - Defines a `Repository` interface (abstract base class).
-  - Implements an `InMemoryRepository` used during Part 2.
-  - This will be replaced with a SQLAlchemy repository later without changing higher layers.
+  * `name`: required, non-empty, max 50 characters
+* **Place**
 
-#### Root files
+  * `title`: required, non-empty, max 100 characters
+  * `price`: must be strictly positive
+  * `latitude`: must be between -90 and 90
+  * `longitude`: must be between -180 and 180
+  * `owner_id`: must reference an existing user
+* **Review**
 
-- `run.py`
-  - Entry point to start the Flask application.
+  * `text`: required and non-empty
+  * `rating`: integer between 1 and 5
+  * `user_id`, `place_id`: must reference existing entities
 
-- `config.py`
-  - Basic configuration setup.
-  - Will be expanded in later parts.
+---
 
-- `requirements.txt`
-  - Dependencies for this part:
-    - `flask`
-    - `flask-restx`
+## API Endpoints (v1)
+
+All endpoints are prefixed with `/api/v1`.
+
+### Users
+
+* `POST /users/`
+* `GET /users/`
+* `GET /users/<user_id>`
+* `PUT /users/<user_id>`
+
+### Amenities
+
+* `POST /amenities/`
+* `GET /amenities/`
+* `GET /amenities/<amenity_id>`
+* `PUT /amenities/<amenity_id>`
+
+### Places
+
+* `POST /places/`
+* `GET /places/`
+* `GET /places/<place_id>`
+* `PUT /places/<place_id>`
+* `GET /places/<place_id>/reviews`
+
+### Reviews
+
+* `POST /reviews/`
+* `GET /reviews/`
+* `GET /reviews/<review_id>`
+* `PUT /reviews/<review_id>`
+* `DELETE /reviews/<review_id>`
 
 ---
 
 ## Installation
 
-From the `hbnb/` directory:
+From `part2/hbnb/` run the following command to install the required python packages:
 
 ```bash
 pip install -r requirements.txt
-Running the Application
-From the hbnb/ directory:
+```
 
-python run.py
-You should see Flask running locally. Swagger documentation is available at:
+`requirements.txt` includes:
 
-http://127.0.0.1:5000/api/v1/
+* `flask`
+* `flask-restx`
 
-At this stage, no functional routes are implemented yet—this confirms the project structure and initialization are correct.
+---
 
-Notes / Next Steps
-API namespaces and endpoints will be implemented in upcoming tasks.
+## Run the Application
 
-Business models will be fully defined later.
+From `part2/hbnb/` run the application with the following command:
 
-The in-memory repository will be replaced by SQLAlchemy persistence in Part 3.
+```bash
+python3 run.py
+```
 
-The Facade will later contain full logic for creating and retrieving users, places, reviews, and amenities.
+Swagger UI:
 
-::contentReference[oaicite:0]{index=0}
+* `http://127.0.0.1:5000/api/v1/`
+
+---
+
+## Tests (unittest)
+
+Test files are located in:
+
+* `app/tests/`
+
+Run the full test suite from `part2/hbnb/` with following command:
+
+```bash
+python -m unittest discover -s app/tests -p "test_*.py"
+```
+
+### Result:
+
+* **25 tests** executed — **OK**
+
+```bash
+@AllixRbn ➜ /workspaces/holbertonschool-hbnb/part2/hbnb (dev) $ python -m unittest discover -s app/tests -p "test_*.py"
+.........................
+----------------------------------------------------------------------
+Ran 25 tests in 0.321s
+
+OK
+```
+
+## Authors
+
+Lucas Nevano
+Allix Robin
