@@ -105,13 +105,18 @@ class HBnBFacade:
 
         if "amenities" in place_data:
             place.clear_amenities()
+
             for amenity_id in place_data["amenities"]:
                 amenity = self.amenity_repo.get(amenity_id)
                 if not amenity:
                     raise ValueError(f"Amenity {amenity_id} not found")
                 place.add_amenity(amenity)
 
+            place_data = place_data.copy()
+            place_data.pop("amenities")
+
         self.place_repo.update(place_id, place_data)
+
         return place
 
     def create_review(self, review_data):
