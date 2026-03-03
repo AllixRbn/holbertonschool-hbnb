@@ -77,8 +77,3 @@ class User(BaseModel):
     def validate_email(email):
         pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
         return re.match(pattern, email)
-
-    @staticmethod
-    def validate_email(email):
-        pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
-        return re.match(pattern, email)
