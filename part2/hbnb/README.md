@@ -1,4 +1,3 @@
-````md
 # HBnB — Part 2 (Flask-RESTX API)
 
 ## Overview
@@ -8,7 +7,7 @@ HBnB is a simplified Airbnb-like application. Part 2 implements a layered archit
 - **Persistence layer**: **in-memory repository** (to be replaced later by a database with SQL Alchemy)
 
 Swagger documentation is available at:
-- `http://127.0.0.1:5000/api/v1/`
+- `http://127.0.0.1:5000/`
 
 ---
 
@@ -132,8 +131,22 @@ All endpoints are prefixed with `/api/v1`.
 
 ## Installation
 
-From `part2/hbnb/` run the following command to install the required python packages:
+**Prerequisites**
+- Python 3.8+
+- pip
 
+**Clone the repository:**
+```bash
+git clone [https://github.com/LucasN-ux/holbertonschool-hbnb.git]
+```
+
+**Create a virtual environment (recommended):**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**Install dependencies:**
 ```bash
 pip install -r requirements.txt
 ```
