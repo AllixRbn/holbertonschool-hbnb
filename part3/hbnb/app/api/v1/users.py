@@ -12,7 +12,6 @@ user_model = api.model('User', {
     'password': fields.String(required=True, description='Password of the user')
 })
 
-
 @api.route('/')
 class UserList(Resource):
     @api.expect(user_model, validate=True)
@@ -30,9 +29,10 @@ class UserList(Resource):
         try:
             password = user_data.pop("password")
             new_user = facade.create_user(user_data)
-            new_user.hash_password(password)
+            new_user.hash_password = password
 
             return {
+                "message": "User created successfully",
                 'id': new_user.id,
                 'first_name': new_user.first_name,
                 'last_name': new_user.last_name,
