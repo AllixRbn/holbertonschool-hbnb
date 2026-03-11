@@ -2,6 +2,7 @@
 
 import re
 from app.models.base import BaseModel
+from app import bcrypt
 
 
 class User(BaseModel):
@@ -14,6 +15,7 @@ class User(BaseModel):
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
+        self._password = None
 
         # collections are read-only via properties
         self._places = []
@@ -77,3 +79,16 @@ class User(BaseModel):
     def validate_email(email):
         pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
         return re.match(pattern, email)
+
+    @property
+    def hash_password(self):
+        raise AttributeError("Password is not readable")
+
+    @hash_password.setter
+    def hash_password(self, password):
+        """Hashes the password before storing it."""
+        self._password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def verify_password(self, password):
+        """Verifies if the provided password matches the hashed password."""
+        return bcrypt.check_password_hash(self._password, password)
