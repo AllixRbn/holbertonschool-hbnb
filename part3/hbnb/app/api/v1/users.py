@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services import facade
 
 api = Namespace('users', description='User operations')
@@ -11,6 +12,11 @@ user_model = api.model('User', {
     'email': fields.String(required=True, description='Email of the user'),
     'password': fields.String(required=True, description='Password of the user')
 })
+user_update_model = api.model('UserUpdate', {
+    'first_name': fields.String(description='First name of the user'),
+    'last_name': fields.String(description='Last name of the user')
+})
+
 
 @api.route('/')
 class UserList(Resource):
@@ -20,7 +26,7 @@ class UserList(Resource):
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new user"""
-        user_data = api.payload
+        user_data = api.payload.copy()
 
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
@@ -61,13 +67,23 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
-    @api.expect(user_model, validate=True)
+    @jwt_required()
+    @api.doc(security='Bearer Auth')
+    @api.expect(user_update_model, validate=True)
     @api.response(200, 'User updated successfully')
     @api.response(404, 'User not found')
+    @api.response(400, 'You cannot modify email or password')
+    @api.response(403, 'Unauthorized action')
     def put(self, user_id):
         """Update a user's information"""
-        new_data = api.payload
+        current_user = get_jwt_identity()
+        if user_id != current_user:
+            return {'error': 'Unauthorized action'}, 403
 
+        new_data = api.payload.copy()
+
+        if 'email' in new_data or 'password' in new_data:
+            return {'error': 'You cannot modify email or password'}, 400
         try:
             updated_user = facade.update_user(user_id, new_data)
             if not updated_user:
