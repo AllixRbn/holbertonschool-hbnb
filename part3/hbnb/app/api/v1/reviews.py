@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 
 api = Namespace('reviews', description='Review operations')
@@ -16,6 +16,11 @@ review_update_model = api.model('ReviewUpdate', {
     'text': fields.String(description='Text of the review'),
     'rating': fields.Integer(description='Rating of the place (1-5)')
 })
+
+
+def _is_admin():
+    claims = get_jwt()
+    return claims.get("is_admin", False)
 
 
 @api.route('/')
@@ -65,8 +70,7 @@ class ReviewList(Resource):
             "rating": r.rating,
             "user_id": r.user.id,
             "place_id": r.place.id
-        } for r in review
-        ], 200
+        } for r in review], 200
 
 
 @api.route('/<review_id>')
@@ -97,10 +101,12 @@ class ReviewResource(Resource):
         """Update a review's information"""
         try:
             current_user = get_jwt_identity()
+            is_admin = _is_admin()
+
             review = facade.get_review(review_id)
             if not review:
                 return {"error": "Review not found"}, 404
-            if review.user.id != current_user:
+            if review.user.id != current_user and not is_admin:
                 return {"error": "Unauthorized action"}, 403
             updated = facade.update_review(review_id, api.payload)
             if not updated:
@@ -123,10 +129,12 @@ class ReviewResource(Resource):
     def delete(self, review_id):
         """Delete a review"""
         current_user = get_jwt_identity()
+        is_admin = _is_admin()
+
         review = facade.get_review(review_id)
         if not review:
             return {"error": "Review not found"}, 404
-        if review.user.id != current_user:
+        if review.user.id != current_user and not is_admin:
             return {"error": "Unauthorized action"}, 403
         deleted = facade.delete_review(review_id)
         if not deleted:
