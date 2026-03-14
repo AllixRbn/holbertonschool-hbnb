@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 
 api = Namespace('places', description='Place operations')
@@ -26,23 +26,37 @@ review_model = api.model('PlaceReview', {
     'user_id': fields.String(description='ID of the user')
 })
 
-# Define the place model for input validation and documentation
-place_model = api.model('Place', {
+# Model for creating a place
+place_create_model = api.model('PlaceCreate', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
     'price': fields.Float(required=True, description='Price per night'),
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
-    'owner_id': fields.String(required=True, description='ID of the owner'),
-    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's"),
+    'amenities': fields.List(fields.String, required=False, description="List of amenities IDs"),
 })
+
+# Model for updating a place
+place_update_model = api.model('PlaceUpdate', {
+    'title': fields.String(description='Title of the place'),
+    'description': fields.String(description='Description of the place'),
+    'price': fields.Float(description='Price per night'),
+    'latitude': fields.Float(description='Latitude of the place'),
+    'longitude': fields.Float(description='Longitude of the place'),
+    'amenities': fields.List(fields.String, required=False, description="List of amenities IDs"),
+})
+
+
+def _is_admin():
+    claims = get_jwt()
+    return claims.get("is_admin", False)
 
 
 @api.route('/')
 class PlaceList(Resource):
     @jwt_required()
     @api.doc(security='Bearer Auth')
-    @api.expect(place_model)
+    @api.expect(place_create_model, validate=True)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
@@ -119,7 +133,7 @@ class PlaceResource(Resource):
 
     @jwt_required()
     @api.doc(security='Bearer Auth')
-    @api.expect(place_model)
+    @api.expect(place_update_model, validate=True)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
@@ -131,7 +145,9 @@ class PlaceResource(Resource):
             return {"error": "Place not found"}, 404
 
         current_user = get_jwt_identity()
-        if place.owner.id != current_user:
+        is_admin = _is_admin()
+
+        if place.owner.id != current_user and not is_admin:
             return {"error": "Unauthorized action"}, 403
 
         try:
