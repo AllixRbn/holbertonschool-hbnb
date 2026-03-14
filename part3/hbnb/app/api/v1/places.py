@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 
 api = Namespace('places', description='Place operations')
@@ -38,11 +38,16 @@ place_model = api.model('Place', {
 })
 
 
+def _is_admin():
+    claims = get_jwt()
+    return claims.get("is_admin", False)
+
+
 @api.route('/')
 class PlaceList(Resource):
     @jwt_required()
     @api.doc(security='Bearer Auth')
-    @api.expect(place_model)
+    @api.expect(place_model, validate=True)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
@@ -119,7 +124,7 @@ class PlaceResource(Resource):
 
     @jwt_required()
     @api.doc(security='Bearer Auth')
-    @api.expect(place_model)
+    @api.expect(place_model, validate=True)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
@@ -131,7 +136,9 @@ class PlaceResource(Resource):
             return {"error": "Place not found"}, 404
 
         current_user = get_jwt_identity()
-        if place.owner.id != current_user:
+        is_admin = _is_admin()
+
+        if place.owner.id != current_user and not is_admin:
             return {"error": "Unauthorized action"}, 403
 
         try:
