@@ -34,14 +34,22 @@ class HBnBFacade:
     def get_all_users(self):
         return self.user_repo.get_all()
 
-    def update_user(self, user_id, new_data):
+    def update_user(self, user_id, new_data, is_admin=False):
         user = self.get_user(user_id)
         if not user:
             return None
 
-        for key in ['first_name', 'last_name', 'email']:
+        allowed_fields = ['first_name', 'last_name']
+
+        if is_admin:
+            allowed_fields.extend(['email', 'password', 'is_admin'])
+
+        for key in allowed_fields:
             if key in new_data:
                 setattr(user, key, new_data[key])
+
+        if is_admin and 'password' in new_data:
+            user.hash_password = new_data['password']
 
         self.user_repo.update(user_id, new_data)
         return user
