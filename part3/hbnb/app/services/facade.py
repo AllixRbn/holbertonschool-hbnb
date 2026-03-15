@@ -4,8 +4,8 @@ Module handling communication between the Presentation, Business Logic,
 and Persistence layers
 """
 
-from app.persistence.repository import InMemoryRepository
 from app.persistence.repository import SQLAlchemyRepository
+from app.services.repositories.user_repository import UserRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
@@ -19,6 +19,8 @@ class HBnBFacade:
         self.review_repo = SQLAlchemyRepository(Review)
         self.amenity_repo = SQLAlchemyRepository(Amenity)
 
+        self.user_repo = UserRepository()
+
         # Bootstrap admin user for testing
         admin = User(
             first_name="Admin",
@@ -31,7 +33,11 @@ class HBnBFacade:
 
     # Placeholder method for creating a user
     def create_user(self, user_data):
+        if not User.validate_email_format(user_data['email']):
+            raise ValueError("Invalid email format")
+
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -39,7 +45,7 @@ class HBnBFacade:
         return self.user_repo.get(user_id)
 
     def get_user_by_email(self, email):
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
         return self.user_repo.get_all()
