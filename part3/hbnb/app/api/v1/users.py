@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 
 api = Namespace('users', description='User operations')
@@ -12,10 +12,24 @@ user_model = api.model('User', {
     'email': fields.String(required=True, description='Email of the user'),
     'password': fields.String(required=True, description='Password of the user')
 })
+# Define the user update model
 user_update_model = api.model('UserUpdate', {
     'first_name': fields.String(description='First name of the user'),
     'last_name': fields.String(description='Last name of the user')
 })
+# Define the admin user update model with additional fields for email, password, and is_admin
+admin_user_update_model = api.model('AdminUserUpdate', {
+    'first_name': fields.String(description='First name of the user'),
+    'last_name': fields.String(description='Last name of the user'),
+    'email': fields.String(description='Email of the user'),
+    'password': fields.String(description='Password of the user'),
+    'is_admin': fields.Boolean(description='Admin status')
+})
+
+
+def _is_admin():
+    claims = get_jwt()
+    return claims.get("is_admin", False)
 
 
 @api.route('/')
@@ -51,7 +65,12 @@ class UserList(Resource):
         """Get a list of all users"""
         users = facade.get_all_users()
         return [
-            {'id': u.id, 'first_name': u.first_name, 'last_name': u.last_name, 'email': u.email}
+            {
+                'id': u.id,
+                'first_name': u.first_name,
+                'last_name': u.last_name,
+                'email': u.email
+            }
             for u in users
         ], 200
 
@@ -65,27 +84,44 @@ class UserResource(Resource):
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
-        return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
+        return {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email
+        }, 200
 
     @jwt_required()
     @api.doc(security='Bearer Auth')
-    @api.expect(user_update_model, validate=True)
+    @api.expect(admin_user_update_model, validate=False)
     @api.response(200, 'User updated successfully')
     @api.response(404, 'User not found')
     @api.response(400, 'You cannot modify email or password')
+    @api.response(400, 'Email is already in use')
     @api.response(403, 'Unauthorized action')
     def put(self, user_id):
         """Update a user's information"""
         current_user = get_jwt_identity()
-        if user_id != current_user:
-            return {'error': 'Unauthorized action'}, 403
-
+        is_admin = _is_admin()
         new_data = api.payload.copy()
 
-        if 'email' in new_data or 'password' in new_data:
-            return {'error': 'You cannot modify email or password'}, 400
+        # Normal users can only update themselves
+        if not is_admin and user_id != current_user:
+            return {'error': 'Unauthorized action'}, 403
+
+        # Normal users cannot modify email or password
+        if not is_admin and ('email' in new_data or 'password' in new_data):
+            return {'error': 'You cannot modify email or password.'}, 400
+
+        # If email is being changed, ensure uniqueness
+        email = new_data.get('email')
+        if email:
+            existing_user = facade.get_user_by_email(email)
+            if existing_user and existing_user.id != user_id:
+                return {'error': 'Email is already in use'}, 400
+
         try:
-            updated_user = facade.update_user(user_id, new_data)
+            updated_user = facade.update_user(user_id, new_data, is_admin=is_admin)
             if not updated_user:
                 return {'error': 'User not found'}, 404
 
