@@ -48,8 +48,8 @@ class UserList(Resource):
 
         try:
             password = user_data.pop("password")
-            new_user = facade.create_user(user_data)
-            new_user.hash_password = password
+            new_user = facade.create_user(user_data, password)
+            new_user.hash_password(password)
 
             return {
                 "message": "User created successfully",
