@@ -4,8 +4,8 @@ Module handling communication between the Presentation, Business Logic,
 and Persistence layers
 """
 
-
-from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import SQLAlchemyRepository
+from app.services.repositories.user_repository import UserRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
@@ -14,24 +14,34 @@ from app.models.amenity import Amenity
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = SQLAlchemyRepository(User)
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.review_repo = SQLAlchemyRepository(Review)
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
 
-        # Bootstrap admin user for testing
-        admin = User(
-            first_name="Admin",
-            last_name="Boss",
-            email="admin@example.com",
-            is_admin=True
-        )
-        admin.hash_password = "admin123"
-        self.user_repo.add(admin)
+        self.user_repo = UserRepository()
+
+    # Bootstrap admin user for testing
+    def bootstrap_admin(self):
+        """Create an admin user if not exists."""
+        admin_email = "admin@example.com"
+        if not self.get_user_by_email(admin_email):
+            admin = User(
+                first_name="Admin",
+                last_name="Boss",
+                email=admin_email,
+                is_admin=True
+            )
+            admin.hash_password("admin123")
+            self.user_repo.add(admin)
 
     # Placeholder method for creating a user
-    def create_user(self, user_data):
+    def create_user(self, user_data, password):
+        if not User.validate_email_format(user_data['email']):
+            raise ValueError("Invalid email format")
+
         user = User(**user_data)
+        user.hash_password(password)
         self.user_repo.add(user)
         return user
 
@@ -39,7 +49,7 @@ class HBnBFacade:
         return self.user_repo.get(user_id)
 
     def get_user_by_email(self, email):
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
         return self.user_repo.get_all()

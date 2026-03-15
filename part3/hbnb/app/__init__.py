@@ -8,17 +8,21 @@ from flask_restx import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from config import config
+from flask_sqlalchemy import SQLAlchemy
+
 
 bcrypt = Bcrypt()
 jwt = JWTManager()
+db = SQLAlchemy()
 
 
-def create_app(config_name='default'):
+def create_app(config_name='development'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
     bcrypt.init_app(app)
     jwt.init_app(app)
+    db.init_app(app)
 
     authorizations = {
         'Bearer Auth': {
