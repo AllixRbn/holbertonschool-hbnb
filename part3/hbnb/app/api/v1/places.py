@@ -91,7 +91,19 @@ class PlaceList(Resource):
                 "id": p.id,
                 "title": p.title,
                 "latitude": p.latitude,
-                "longitude": p.longitude
+                "longitude": p.longitude,
+                "owner": {
+                    "id": p.owner.id,
+                    "first_name": p.owner.first_name,
+                    "last_name": p.owner.last_name,
+                    "email": p.owner.email
+                },
+                "amenities": [
+                    {
+                        "id": a.id,
+                        "name": a.name
+                    } for a in p.amenities
+                ]
             }
             for p in places
         ], 200
@@ -180,3 +192,53 @@ class PlaceReviewList(Resource):
             }
             for r in reviews
         ], 200
+
+
+@api.route('/<place_id>/amenities')
+class PlaceAmenityList(Resource):
+    @api.response(200, 'Amenities for the place retrieved successfully')
+    @api.response(404, 'Place not found')
+    def get(self, place_id):
+        """Get all amenities for a specific place"""
+        place = facade.get_place(place_id)
+        if not place:
+            return {"error": "Place not found"}, 404
+
+        return [
+            {
+                "id": amenity.id,
+                "name": amenity.name
+            } for amenity in place.amenities
+        ], 200
+
+    @jwt_required()
+    @api.doc(security='Bearer Auth')
+    @api.expect(api.model('PlaceAmenityUpdate', {
+        'amenity_ids': fields.List(fields.String, required=True, description='List of amenity IDs to associate')
+    }), validate=True)
+    @api.response(200, 'Amenities associated successfully')
+    @api.response(404, 'Place or amenity not found')
+    @api.response(403, 'Unauthorized action')
+    def post(self, place_id):
+        """Associate amenities with a specific place"""
+        place = facade.get_place(place_id)
+        if not place:
+            return {"error": "Place not found"}, 404
+
+        current_user = get_jwt_identity()
+        is_admin = _is_admin()
+        if place.owner.id != current_user and not is_admin:
+            return {"error": "Unauthorized action"}, 403
+
+        amenity_ids = api.payload.get('amenity_ids', [])
+        try:
+            updated_place = facade.add_amenities_to_place(place_id, amenity_ids)
+            return {
+                "id": updated_place.id,
+                "title": updated_place.title,
+                "amenities": [
+                    {"id": a.id, "name": a.name} for a in updated_place.amenities
+                ]
+            }, 200
+        except ValueError as e:
+            return {"error": str(e)}, 404

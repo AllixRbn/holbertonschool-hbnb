@@ -10,7 +10,6 @@ class Amenity(BaseModel):
     name = db.Column(db.String(50), nullable=False)
 
     def __init__(self, name: str):
-        super().__init__()
         if not name or len(name) > 50:
             raise ValueError("Invalid amenity name")
         self.name = name
