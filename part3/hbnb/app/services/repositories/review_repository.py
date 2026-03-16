@@ -1,8 +1,8 @@
 from app.models.review import Review
-from app.services.repositories.base import BaseRepository   
+from app.persistence.repository import SQLAlchemyRepository
 from app import db
 
 
-class ReviewRepository(BaseRepository):
+class ReviewRepository(SQLAlchemyRepository):
     def __init__(self):
         super().__init__(Review)

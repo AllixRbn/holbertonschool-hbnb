@@ -42,8 +42,6 @@ class Place(BaseModel):
 
         # Temporary Python-side links until SQLAlchemy relationships are added later
         self.owner = owner
-        self.reviews = []
-        self.amenities = []
 
     def add_review(self, review):
         self.reviews.append(review)

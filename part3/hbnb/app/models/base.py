@@ -15,4 +15,3 @@ class BaseModel(db.Model):
         """Save the current instance to the database."""
         db.session.add(self)
         db.session.commit()
-

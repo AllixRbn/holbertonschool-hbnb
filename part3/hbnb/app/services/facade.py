@@ -13,6 +13,7 @@ from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
+from app import db
 
 
 class HBnBFacade:
@@ -100,6 +101,22 @@ class HBnBFacade:
 
         self.amenity_repo.update(amenity_id, clean_data)
         return amenity
+
+    def add_amenities_to_place(self, place_id, amenity_ids):
+        place = self.get_place(place_id)
+        if not place:
+            raise ValueError("Place not found")
+
+        amenities = []
+        for aid in amenity_ids:
+            amenity = self.get_amenity(aid)
+            if not amenity:
+                raise ValueError(f"Amenity {aid} not found")
+            amenities.append(amenity)
+
+        place.amenities = amenities
+        db.session.commit()
+        return place
 
     def create_place(self, place_data):
         owner = self.user_repo.get(place_data["owner_id"])
