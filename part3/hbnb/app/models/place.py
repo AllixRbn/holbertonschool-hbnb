@@ -2,7 +2,7 @@
 
 from app import db
 from app.models.base import BaseModel
-from app.models.user import User
+from app.models.association import place_amenity
 
 
 class Place(BaseModel):
@@ -14,9 +14,16 @@ class Place(BaseModel):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
 
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+    # one-to-many relationship with Review
+    reviews = db.relationship('Review', backref='place', cascade='all, delete-orphan', lazy=True)
+
+    # many-to-many relationship with Amenity
+    amenities = db.relationship('Amenity', secondary=place_amenity, backref=db.backref('places', lazy=True),lazy=True)
+
     def __init__(self, title: str, description: str = None, price: float = 0.0,
-                 latitude: float = 0.0, longitude: float = 0.0, owner: User = None):
-        super().__init__()
+                 latitude: float = 0.0, longitude: float = 0.0, owner=None):
 
         if not title or len(title) > 100:
             raise ValueError("Invalid title")
