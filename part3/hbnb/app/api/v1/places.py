@@ -91,7 +91,19 @@ class PlaceList(Resource):
                 "id": p.id,
                 "title": p.title,
                 "latitude": p.latitude,
-                "longitude": p.longitude
+                "longitude": p.longitude,
+                "owner": {
+                    "id": p.owner.id,
+                    "first_name": p.owner.first_name,
+                    "last_name": p.owner.last_name,
+                    "email": p.owner.email
+                },
+                "amenities": [
+                    {
+                        "id": a.id,
+                        "name": a.name
+                    } for a in p.amenities
+                ]
             }
             for p in places
         ], 200
@@ -180,6 +192,7 @@ class PlaceReviewList(Resource):
             }
             for r in reviews
         ], 200
+
 
 @api.route('/<place_id>/amenities')
 class PlaceAmenityList(Resource):
