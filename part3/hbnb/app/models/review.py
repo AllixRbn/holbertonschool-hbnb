@@ -13,9 +13,7 @@ class Review(BaseModel):
     place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
-
     def __init__(self, text: str, rating: int, place=None, user=None):
-
 
         if not text or not text.strip():
             raise ValueError("Review text is required")
