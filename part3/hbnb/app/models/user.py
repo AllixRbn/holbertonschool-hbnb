@@ -16,7 +16,7 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-    #one-to-many relationship with Place and Review
+    # One-to-many relationship with Place and Review
     places = db.relationship('Place', backref='owner', cascade='all, delete-orphan', lazy=True)
     reviews = db.relationship('Review', backref='user', cascade='all, delete-orphan', lazy=True)
 
@@ -32,7 +32,7 @@ class User(BaseModel):
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
-        self.password = None 
+        self.password = None
 
     @staticmethod
     def validate_email_format(email):

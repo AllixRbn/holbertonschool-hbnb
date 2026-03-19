@@ -39,8 +39,6 @@ class Place(BaseModel):
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
-
-        # Temporary Python-side links until SQLAlchemy relationships are added later
         self.owner = owner
 
     def add_review(self, review):

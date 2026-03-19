@@ -1,5 +1,3 @@
 __pycache__/
 venv/
 .env
-# Ignore local SQLite database
-instance/development.db
