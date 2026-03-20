@@ -155,19 +155,6 @@ The following diagram represents the database structure and relationships betwee
 
 ![Database Diagram](Database%20diagram/Database%20Diagram.png)
 
-### Where to put the diagram file
-Place the image file at the **root of the project**, next to `README.md`, with the exact name:
-
-```text
-Database Diagram.png
-```
-
-If you prefer, you can also create an `img/` folder and use:
-
-```md
-![Database Diagram](img/Database%20Diagram.png)
-```
-
 ---
 
 ## Models and Relationships
