@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from config import config
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 
 bcrypt = Bcrypt()
@@ -19,6 +20,8 @@ db = SQLAlchemy()
 def create_app(config_name='development'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
+
+    CORS(app, origins=["http://localhost:5500", "http://127.0.0.1:5500"])
 
     bcrypt.init_app(app)
     jwt.init_app(app)
