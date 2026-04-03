@@ -13,6 +13,7 @@ New in this part:
 - **User registration** — new accounts can be created directly from the interface
 - **Review system** — authenticated users can submit reviews from the place detail page or a dedicated page
 - **Price filter** — places can be filtered by maximum price per night
+- **Fully responsive layout** — hamburger navigation on mobile, fluid grids from desktop to 320 px
 - **Light / dark mode** — persisted across pages via localStorage
 - **Mock data fallback** — the frontend degrades gracefully when the API is unreachable
 - **Database seeder** — a bash script populates the database entirely through the API
