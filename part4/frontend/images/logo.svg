@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 40" role="img" aria-label="HBnB">
+  <title>HBnB</title>
+
+  <!-- Cherry blossom mark -->
+  <g transform="translate(20,20)">
+    <!-- 5 petals using organic bezier paths -->
+    <path d="M0,0 C-5,-3,-7,-14,0,-20 C7,-14,5,-3,0,0 Z"
+          fill="#F2BECE" transform="rotate(0)"/>
+    <path d="M0,0 C-5,-3,-7,-14,0,-20 C7,-14,5,-3,0,0 Z"
+          fill="#E8A0BF" transform="rotate(72)"/>
+    <path d="M0,0 C-5,-3,-7,-14,0,-20 C7,-14,5,-3,0,0 Z"
+          fill="#F2BECE" transform="rotate(144)"/>
+    <path d="M0,0 C-5,-3,-7,-14,0,-20 C7,-14,5,-3,0,0 Z"
+          fill="#E8A0BF" transform="rotate(216)"/>
+    <path d="M0,0 C-5,-3,-7,-14,0,-20 C7,-14,5,-3,0,0 Z"
+          fill="#F2BECE" transform="rotate(288)"/>
+    <!-- Center disc -->
+    <circle r="5" fill="#C97FAB"/>
+    <!-- Stamens -->
+    <circle cy="-3.2" r="1.1" fill="#FFF4F9" opacity="0.95"/>
+    <circle cx="3.0"  cy="1.0" r="1.1" fill="#FFF4F9" opacity="0.95"/>
+    <circle cx="-3.0" cy="1.0" r="1.1" fill="#FFF4F9" opacity="0.95"/>
+  </g>
+
+  <!-- Brand name -->
+  <text
+    x="46" y="28"
+    font-family="'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif"
+    font-size="23"
+    font-weight="600"
+    letter-spacing="1.5"
+    fill="#7A3B5A">HBnB</text>
+</svg>

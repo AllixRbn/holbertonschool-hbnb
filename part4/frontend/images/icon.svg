@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="HBnB">
+  <title>HBnB</title>
+  <g transform="translate(16,16)">
+    <!-- 5 petals -->
+    <path d="M0,0 C-4,-2.5,-5.5,-11,0,-16 C5.5,-11,4,-2.5,0,0 Z"
+          fill="#F2BECE" transform="rotate(0)"/>
+    <path d="M0,0 C-4,-2.5,-5.5,-11,0,-16 C5.5,-11,4,-2.5,0,0 Z"
+          fill="#E8A0BF" transform="rotate(72)"/>
+    <path d="M0,0 C-4,-2.5,-5.5,-11,0,-16 C5.5,-11,4,-2.5,0,0 Z"
+          fill="#F2BECE" transform="rotate(144)"/>
+    <path d="M0,0 C-4,-2.5,-5.5,-11,0,-16 C5.5,-11,4,-2.5,0,0 Z"
+          fill="#E8A0BF" transform="rotate(216)"/>
+    <path d="M0,0 C-4,-2.5,-5.5,-11,0,-16 C5.5,-11,4,-2.5,0,0 Z"
+          fill="#F2BECE" transform="rotate(288)"/>
+    <!-- Center -->
+    <circle r="4" fill="#C97FAB"/>
+    <!-- Stamens -->
+    <circle cy="-2.5" r="0.9" fill="#FFF4F9" opacity="0.95"/>
+    <circle cx="2.4"  cy="0.8" r="0.9" fill="#FFF4F9" opacity="0.95"/>
+    <circle cx="-2.4" cy="0.8" r="0.9" fill="#FFF4F9" opacity="0.95"/>
+  </g>
+</svg>

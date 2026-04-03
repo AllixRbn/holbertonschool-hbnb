@@ -1,54 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBnB - Add Review</title>
-    <link rel="icon" href="images/icon.png" type="image/png">
+    <title>HBnB — Add a review</title>
+    <link rel="icon" href="images/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <!-- Sakura petals background -->
+    <div id="petals-container" aria-hidden="true"></div>
+
+    <!-- ═══ HEADER ═══ -->
     <header>
         <div class="header-container">
-            <img src="images/logo.png" alt="HBnB Logo" class="logo">
+            <img src="images/logo.svg" alt="HBnB logo" class="logo">
+            <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
             <nav>
                 <a href="index.html">Home</a>
-                <a href="login.html" class="login-button">Login</a>
+                <!-- #login-link present but hidden when authenticated (scripts.js) -->
+                <a href="login.html" id="login-link" class="login-button">Login</a>
+                <button id="logout-btn" class="logout-button" style="display:none;" type="button">Logout</button>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌸</button>
             </nav>
         </div>
     </header>
 
     <main>
+
+        <!-- ═══ ADD REVIEW ═══                                             -->
+        <!-- class="add-review": required                                    -->
+        <!-- scripts.js redirects unauthenticated users to index.html        -->
         <section class="add-review">
-            <h2>Add a Review</h2>
-            <!-- Place title loaded dynamically -->
+            <h2>Add a review</h2>
+
+            <!-- id="place-name-display": required — filled by scripts.js -->
             <p id="place-name-display" class="reviewing-label"></p>
-            <form id="review-form" class="form">
+
+            <!-- id="review-form": required · class="form": required       -->
+            <form id="review-form" class="form" novalidate>
+
                 <div class="form-group">
-                    <label for="review">Your Review:</label>
-                    <textarea id="review" name="review" required
-                              placeholder="Share your experience..."></textarea>
+                    <label for="review">Your experience</label>
+                    <!-- id="review": required on add_review.html (different from place.html) -->
+                    <textarea
+                        id="review"
+                        name="review"
+                        placeholder="Share what made your stay special…"
+                        required></textarea>
                 </div>
+
                 <div class="form-group">
-                    <label for="rating">Rating:</label>
-                    <select id="rating" name="rating" required>
-                        <option value="">Select a rating</option>
-                        <option value="1">1 &#8212; Poor</option>
-                        <option value="2">2 &#8212; Fair</option>
-                        <option value="3">3 &#8212; Good</option>
-                        <option value="4">4 &#8212; Very Good</option>
-                        <option value="5">5 &#8212; Excellent</option>
+                    <!-- id="rating": required on add_review.html -->
+                    <label>Rating</label>
+
+                    <!-- Interactive star rating widget (visual enhancement) -->
+                    <!-- Also keeps the required select below for accessibility/fallback -->
+                    <div class="star-rating" role="radiogroup" aria-label="Rating">
+                        <input type="radio" id="s5" name="star-rating" value="5">
+                        <label for="s5" aria-label="5 stars">★</label>
+                        <input type="radio" id="s4" name="star-rating" value="4">
+                        <label for="s4" aria-label="4 stars">★</label>
+                        <input type="radio" id="s3" name="star-rating" value="3">
+                        <label for="s3" aria-label="3 stars">★</label>
+                        <input type="radio" id="s2" name="star-rating" value="2">
+                        <label for="s2" aria-label="2 stars">★</label>
+                        <input type="radio" id="s1" name="star-rating" value="1">
+                        <label for="s1" aria-label="1 star">★</label>
+                    </div>
+
+                    <!-- Required select (id="rating") — visually de-emphasised but present -->
+                    <select id="rating" name="rating" style="margin-top:8px;">
+                        <option value="">Or select numerically</option>
+                        <option value="1">1 &mdash; Poor</option>
+                        <option value="2">2 &mdash; Fair</option>
+                        <option value="3">3 &mdash; Good</option>
+                        <option value="4">4 &mdash; Very good</option>
+                        <option value="5">5 &mdash; Excellent</option>
                     </select>
                 </div>
-                <button type="submit" class="details-button">Submit Review</button>
+
+                <!-- class="details-button": required on submit -->
+                <button type="submit" class="details-button">Submit review</button>
             </form>
         </section>
+
     </main>
 
+    <!-- ═══ FOOTER ═══ -->
     <footer>
         <p>&copy; 2024 HBnB. All rights reserved.</p>
     </footer>
 
+    <script src="petals.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>

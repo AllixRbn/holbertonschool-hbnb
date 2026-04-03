@@ -1,62 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBnB - Place Details</title>
-    <link rel="icon" href="images/icon.png" type="image/png">
+    <title>HBnB — Place details</title>
+    <link rel="icon" href="images/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <!-- Sakura petals background -->
+    <div id="petals-container" aria-hidden="true"></div>
+
+    <!-- ═══ HEADER ═══ -->
     <header>
         <div class="header-container">
-            <img src="images/logo.png" alt="HBnB Logo" class="logo">
+            <img src="images/logo.svg" alt="HBnB logo" class="logo">
+            <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
             <nav>
                 <a href="index.html">Home</a>
+                <!-- #login-link: required — shown/hidden by scripts.js based on auth -->
                 <a href="login.html" id="login-link" class="login-button">Login</a>
+                <button id="logout-btn" class="logout-button" style="display:none;" type="button">Logout</button>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌸</button>
             </nav>
         </div>
     </header>
 
     <main>
-        <!-- Place info populated dynamically -->
-        <section id="place-details" class="place-details">
-        </section>
 
-        <!-- Reviews populated dynamically -->
+        <!-- Decorative hero image — src injected by scripts.js -->
+        <div class="place-hero-image" aria-hidden="true">
+            <img src="" alt="" loading="lazy">
+        </div>
+
+        <!-- ═══ PLACE INFO ═══                                             -->
+        <!-- id="place-details": required · class="place-details": required -->
+        <!-- .place-info inside is also required                             -->
+        <!-- Content injected dynamically by scripts.js                      -->
+        <section id="place-details" class="place-details"></section>
+
+        <!-- ═══ REVIEWS ═══                                         -->
+        <!-- id="reviews": required — .review-card injected by JS   -->
         <section id="reviews">
             <h2>Reviews</h2>
         </section>
 
-        <!-- Shown only when authenticated -->
-        <section id="add-review" class="add-review" style="display: none;">
-            <h2>Add a Review</h2>
+        <!-- ═══ ADD REVIEW ═══                                              -->
+        <!-- id="add-review": required · class="add-review": required        -->
+        <!-- class="form": required on the form element                       -->
+        <!-- Shown only when authenticated — controlled by scripts.js         -->
+        <section id="add-review" class="add-review" style="display:none;">
+            <h2>Leave a review</h2>
             <form id="review-form" class="form">
+
                 <div class="form-group">
-                    <label for="review-text">Your Review:</label>
-                    <textarea id="review-text" name="review-text" required
-                              placeholder="Share your experience..."></textarea>
+                    <label for="review-text">Your experience</label>
+                    <!-- id="review-text": required on place.html -->
+                    <textarea
+                        id="review-text"
+                        name="review-text"
+                        placeholder="Share what made your stay special…"
+                        required></textarea>
                 </div>
+
                 <div class="form-group">
-                    <label for="rating">Rating:</label>
+                    <!-- id="rating": required on place.html -->
+                    <label for="rating">Rating</label>
                     <select id="rating" name="rating" required>
                         <option value="">Select a rating</option>
-                        <option value="1">1 &#8212; Poor</option>
-                        <option value="2">2 &#8212; Fair</option>
-                        <option value="3">3 &#8212; Good</option>
-                        <option value="4">4 &#8212; Very Good</option>
-                        <option value="5">5 &#8212; Excellent</option>
+                        <option value="1">1 &mdash; Poor</option>
+                        <option value="2">2 &mdash; Fair</option>
+                        <option value="3">3 &mdash; Good</option>
+                        <option value="4">4 &mdash; Very good</option>
+                        <option value="5">5 &mdash; Excellent</option>
                     </select>
                 </div>
-                <button type="submit" class="details-button">Submit Review</button>
+
+                <!-- class="details-button": required on submit -->
+                <button type="submit" class="details-button">Submit review</button>
             </form>
         </section>
+
     </main>
 
+    <!-- ═══ FOOTER ═══ -->
     <footer>
         <p>&copy; 2024 HBnB. All rights reserved.</p>
     </footer>
 
+    <script src="petals.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>
