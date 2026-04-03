@@ -709,20 +709,38 @@ function displayPlaceDetails(place, placeId) {
         </div>`;
 }
 
-/** GET /api/v1/places/<id>/reviews */
+/** GET reviews for a place, enriched with user names */
 async function fetchReviews(placeId) {
     const reviewsSection = document.getElementById('reviews');
     if (!reviewsSection) return;
 
     if (placeId.startsWith('mock-')) {
-        displayReviews(MOCK_REVIEWS[placeId] || [], reviewsSection, placeId);
+        displayReviews(MOCK_REVIEWS[placeId] || [], reviewsSection);
         return;
     }
 
     try {
-        const response = await fetch(`${API_URL}/api/v1/places/${placeId}/reviews`);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        displayReviews(await response.json(), reviewsSection, placeId);
+        /* Fetch all reviews + all users in parallel, then cross-reference */
+        const [rvRes, usRes] = await Promise.all([
+            fetch(`${API_URL}/api/v1/reviews/`),
+            fetch(`${API_URL}/api/v1/users/`)
+        ]);
+
+        if (!rvRes.ok) throw new Error(`HTTP ${rvRes.status}`);
+
+        const allReviews = await rvRes.json();
+        const userMap = {};
+        if (usRes.ok) {
+            const users = await usRes.json();
+            users.forEach(u => { userMap[u.id] = u; });
+        }
+
+        /* Filter to this place and attach user info */
+        const reviews = allReviews
+            .filter(r => r.place_id === placeId)
+            .map(r => ({ ...r, user: userMap[r.user_id] || null }));
+
+        displayReviews(reviews, reviewsSection);
     } catch (_) {
         reviewsSection.innerHTML = `<div class="reviews-header"><h2>Reviews</h2></div>
             <p class="no-places">Unable to load reviews.</p>`;
@@ -730,7 +748,7 @@ async function fetchReviews(placeId) {
 }
 
 /** Render review cards into #reviews section */
-function displayReviews(reviews, container, placeId) {
+function displayReviews(reviews, container) {
     const avg   = avgRating(reviews);
     const count = reviews ? reviews.length : 0;
 
