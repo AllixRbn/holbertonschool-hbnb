@@ -1,530 +1,375 @@
 # HBnB — Part 4
 
-## Overview
-
-HBnB is a simplified Airbnb-like application developed as part of the Holberton School curriculum.  
-This fourth part extends the previous versions by introducing a **full web client** that connects to the existing REST API.
-
-New in this part:
-
-- **HTML/CSS/JavaScript frontend** — no framework, no library
-- **JWT-based authentication** handled entirely in the browser via cookies
-- **Dynamic rendering** — all content is fetched from the API and injected into the DOM
-- **User registration** — new accounts can be created directly from the interface
-- **Review system** — authenticated users can submit reviews from the place detail page or a dedicated page
-- **Price filter** — places can be filtered by maximum price per night
-- **Fully responsive layout** — hamburger navigation on mobile, fluid grids from desktop to 320 px
-- **Light / dark mode** — persisted across pages via localStorage
-- **Mock data fallback** — the frontend degrades gracefully when the API is unreachable
-- **Database seeder** — a bash script populates the database entirely through the API
-
-The backend is identical to Part 3 and retains its full layered architecture with Flask, SQLAlchemy, and JWT.
-
-Swagger documentation is available at:
-
-- `http://127.0.0.1:5000/`
+> A full-stack Airbnb-inspired web application built with a Flask REST API and a vanilla JS frontend, developed as part of the Holberton School curriculum.
 
 ---
 
-## Project Structure
-
-```text
-part4/
-├── backend/
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── api/
-│   │   │   └── v1/
-│   │   │       ├── __init__.py
-│   │   │       ├── amenities.py
-│   │   │       ├── auth.py
-│   │   │       ├── places.py
-│   │   │       ├── reviews.py
-│   │   │       └── users.py
-│   │   ├── models/
-│   │   │   ├── __init__.py
-│   │   │   ├── amenity.py
-│   │   │   ├── association.py
-│   │   │   ├── base.py
-│   │   │   ├── place.py
-│   │   │   ├── review.py
-│   │   │   └── user.py
-│   │   ├── persistence/
-│   │   │   ├── __init__.py
-│   │   │   └── repository.py
-│   │   ├── services/
-│   │   │   ├── __init__.py
-│   │   │   ├── facade.py
-│   │   │   └── repositories/
-│   │   │       ├── __init__.py
-│   │   │       ├── amenity_repository.py
-│   │   │       ├── place_repository.py
-│   │   │       ├── review_repository.py
-│   │   │       └── user_repository.py
-│   │   └── tests/
-│   │       ├── list_datas.py
-│   │       ├── test_amenities.py
-│   │       ├── test_places.py
-│   │       ├── test_reviews.py
-│   │       └── test_users.py
-│   ├── instance/
-│   │   └── development.db
-│   ├── sql/
-│   │   ├── schema.sql
-│   │   └── enter_data.sql
-│   ├── config.py
-│   ├── requirements.txt
-│   └── run.py
-├── frontend/
-│   ├── images/
-│   │   ├── logo.svg
-│   │   └── icon.svg
-│   ├── index.html
-│   ├── login.html
-│   ├── register.html
-│   ├── place.html
-│   ├── add_review.html
-│   ├── styles.css
-│   ├── scripts.js
-│   └── petals.js
-└── seed.sh
-```
-
----
-
-## Architecture
-
-### Backend
-
-The backend follows a **3-layer architecture** inherited from Part 3:
-
-- **API layer**: handles HTTP requests and JSON responses (Flask-RESTX)
-- **Facade layer**: centralizes business logic and orchestration
-- **Repository layer**: handles persistence and database interactions (SQLAlchemy)
-
-```text
-API → Facade → Repository → Database
-```
-
-### Frontend
-
-The frontend is a **static web client** built with vanilla HTML, CSS, and JavaScript only.  
-It communicates with the backend exclusively through `fetch()` calls to the REST API.
-
-```text
-Browser → fetch() → Flask API → SQLite
-```
-
-Authentication tokens are stored in cookies and read on every page load to determine the user's session state.
-
----
-
-## Technologies Used
-
-### Backend
-- **Python 3**
-- **Flask**
-- **Flask-RESTX**
-- **Flask-Bcrypt**
-- **Flask-JWT-Extended**
-- **SQLAlchemy**
-- **Flask-SQLAlchemy**
-- **SQLite**
-- **email-validator**
-
-### Frontend
-- **HTML5**
-- **CSS3** — custom properties, glassmorphism, keyframe animations, responsive layout
-- **Vanilla JavaScript ES6** — fetch API, DOM manipulation, cookie handling
-- **Google Fonts** — Cormorant Garamond, Inter
-
----
-
-## Frontend Pages
-
-### `index.html` — Home
-- Displays all available places fetched from the API
-- Pill-based price filter synced to a hidden select element
-- Falls back to mock data with a toast notification if the API is unreachable
-- Requires no authentication to browse
-
-### `login.html` — Sign in
-- Email and password form
-- On success, stores the JWT token as a cookie and redirects to the home page
-- Links to the registration page
-
-### `register.html` — Create account
-- First name, last name, email, password, and password confirmation
-- Validates that passwords match and meet the minimum length
-- On success, automatically logs the user in and redirects to the home page
-
-### `place.html` — Place details
-- Fetches and displays the full details of a place including description, price, owner, amenities, and reviews
-- Shows a review form at the bottom only when the user is authenticated
-
-### `add_review.html` — Add a review
-- Dedicated review submission page linked from the place detail page
-- Requires authentication — unauthenticated users are redirected to the home page
-- Supports both a star rating widget and a numeric select fallback
-
----
-
-## Frontend Features
-
-### Authentication flow
-- JWT token stored in `document.cookie` with `path=/`
-- On every page load, the token is read and used to show or hide the login/logout button
-- Logout expires the cookie immediately and redirects to the home page
-
-### Dark mode
-- Toggled by the 🌸 button in the navigation bar
-- Theme preference is persisted in `localStorage`
-- Applied via a `data-theme="dark"` attribute on the `<html>` element
-
-### Sakura petal animation
-- Animated petals fall across the background on all pages
-- Implemented in `petals.js` as a self-contained IIFE
-- Controlled by CSS keyframes
-
-### Mock data fallback
-- If the backend is not reachable, the frontend displays a predefined set of 6 places with reviews
-- A toast notification informs the user that live data could not be loaded
-- Mock place IDs are prefixed with `mock-` to prevent unnecessary API calls
-
-### Toast notifications
-- Used for login success, errors, review submission, and mock data fallback
-- Auto-dismiss after 3.5 seconds
-
----
-
-## Database Seeder
-
-`seed.sh` is a bash script that populates the database entirely through the API without touching any backend files.
-
-It creates:
-- **6 host users** (Yuki, Emma, Kenji, Sophie, Hana, Luca)
-- **4 guest reviewer users** (Marie, Thomas, Aiko, James)
-- **22 amenities** (WiFi, Private Garden, Tea Room, Hot Tub, Spa Access, etc.)
-- **6 places**, each created while logged in as the respective owner
-- **24 reviews**, with guests reviewing places they did not own
-
-The script is idempotent: users and amenities that already exist are skipped gracefully.
-
-```bash
-bash part4/seed.sh
-```
-
-The backend must be running before executing the seeder.
-
----
-
-## Models and Relationships
-
-### User
-Fields: `id`, `first_name`, `last_name`, `email`, `password`, `is_admin`, `created_at`, `updated_at`
-
-Relationships:
-- one user can own many places
-- one user can write many reviews
-
-### Place
-Fields: `id`, `title`, `description`, `price`, `latitude`, `longitude`, `owner_id`, `created_at`, `updated_at`
-
-Relationships:
-- belongs to one user
-- has many reviews
-- has many amenities (via association table)
-
-### Review
-Fields: `id`, `text`, `rating`, `user_id`, `place_id`, `created_at`, `updated_at`
-
-Relationships:
-- belongs to one user
-- belongs to one place
-
-### Amenity
-Fields: `id`, `name`, `created_at`, `updated_at`
-
-Relationships:
-- belongs to many places through the `place_amenity` association table
-
----
-
-## Business Rules and Validation
-
-### User
-- `first_name` and `last_name` are required and must not exceed 50 characters
-- `email` must be valid and unique
-- passwords are hashed with bcrypt
-
-### Place
-- `title` is required and must not exceed 100 characters
-- `price` must be strictly positive
-- `latitude` must be between `-90` and `90`
-- `longitude` must be between `-180` and `180`
-
-### Review
-- `text` is required and must not be empty
-- `rating` must be between `1` and `5`
-- a user can only leave one review per place
-- a user cannot review their own place
-
-### Amenity
-- `name` is required and must not exceed 50 characters
-
----
-
-## Authentication and Authorization
-
-Authentication is handled with **JWT** (Flask-JWT-Extended).
-
-### Login
-
-```http
-POST /api/v1/auth/login
-```
-
-Body:
-
-```json
-{
-  "email": "admin@example.com",
-  "password": "admin123"
-}
-```
-
-Response:
-
-```json
-{
-  "access_token": "<JWT_TOKEN>"
-}
-```
-
-### Protected endpoints
-
-Protected routes require:
-
-```http
-Authorization: Bearer <JWT_TOKEN>
-```
-
-### Role-based access control
-- regular users can only modify their own profile
-- regular users can only update/delete their own reviews
-- regular users can only update their own places
-- admins can:
-  - modify any user
-  - create and update amenities
-  - bypass ownership restrictions on places and reviews
-
----
-
-## API Endpoints
-
-All endpoints are prefixed with `/api/v1`.
-
-### Authentication
-- `POST /auth/login`
-- `GET /auth/protected`
-
-### Users
-- `POST /users/`
-- `GET /users/`
-- `GET /users/<user_id>`
-- `PUT /users/<user_id>`
-
-### Places
-- `POST /places/`
-- `GET /places/`
-- `GET /places/<place_id>`
-- `PUT /places/<place_id>`
-- `GET /places/<place_id>/reviews`
-- `GET /places/<place_id>/amenities`
-- `POST /places/<place_id>/amenities`
-
-### Reviews
-- `POST /reviews/`
-- `GET /reviews/`
-- `GET /reviews/<review_id>`
-- `PUT /reviews/<review_id>`
-- `DELETE /reviews/<review_id>`
-
-### Amenities
-- `POST /amenities/`
-- `GET /amenities/`
-- `GET /amenities/<amenity_id>`
-- `PUT /amenities/<amenity_id>`
-
----
-
-## Installation
+## Getting Started
 
 ### Prerequisites
-- Python 3.8+
-- pip
-- A modern web browser
 
-### Clone the repository
+Make sure the following are installed on your machine before anything else:
+
+- **Python 3.8+** — check with `python3 --version`
+- **pip** — check with `pip --version`
+- **Git** — check with `git --version`
+- A modern web browser (Chrome, Firefox, Edge…)
+
+---
+
+### Step 1 — Clone the repository
 
 ```bash
-git clone https://github.com/LucasN-ux/holbertonschool-hbnb.git
+git clone https://github.com/AllixRbn/holbertonschool-hbnb.git
 cd holbertonschool-hbnb
 ```
 
-### Install backend dependencies
+---
+
+### Step 2 — Install backend dependencies
 
 ```bash
 cd part4/backend
 pip install -r requirements.txt
 ```
 
-Dependencies:
-
-- `flask`
-- `flask-restx`
-- `flask-bcrypt`
-- `flask-jwt-extended`
-- `flask-cors`
-- `sqlalchemy`
-- `flask-sqlalchemy`
-- `email-validator`
+This installs Flask, Flask-RESTX, Flask-JWT-Extended, Flask-Bcrypt, Flask-CORS, Flask-SQLAlchemy, and email-validator.
 
 ---
 
-## Configuration
+### Step 3 — Start the backend
 
-The backend uses `config.py` with:
+```bash
+python run.py
+```
 
-- `SECRET_KEY` — read from environment variable, falls back to `default_secret_key`
-- `DEBUG = True`
-- `SQLALCHEMY_DATABASE_URI = sqlite:///development.db`
-- `SQLALCHEMY_TRACK_MODIFICATIONS = False`
+You should see:
 
-### CORS
+```
+* Running on http://127.0.0.1:5000
+```
 
-The backend allows cross-origin requests only from:
+Leave this terminal open. The backend must stay running for the frontend to work.
 
-- `http://localhost:5500`
-- `http://127.0.0.1:5500`
-
-The frontend must be served on port **5500** for the API calls to work.
+> On first launch, the app automatically creates the SQLite database and an admin user. The database is already included in the repository so all data is ready immediately.
 
 ---
 
-## Running the Project
+### Step 4 — Serve the frontend
 
-### Step 1 — Start the backend
-
-```bash
-cd part4/backend
-python3 run.py
-```
-
-At startup, the application will:
-- create the database tables via `db.create_all()`
-- bootstrap an admin user if one does not already exist
-
-Swagger UI will be available at `http://127.0.0.1:5000/`.
-
-### Step 2 — Seed the database (first run only)
-
-```bash
-bash part4/seed.sh
-```
-
-This populates the database with 6 places, 22 amenities, and 24 reviews via the API.  
-The backend must be running before executing this script.
-
-### Step 3 — Serve the frontend
+Open a **second terminal**, then:
 
 ```bash
 cd part4/frontend
 python3 -m http.server 5500
 ```
 
-Then open `http://127.0.0.1:5500` in your browser.
+---
+
+### Step 5 — Open the app
+
+Go to **http://127.0.0.1:5500** in your browser.
+
+The API's Swagger documentation is available at **http://127.0.0.1:5000**.
 
 ---
 
-## Default Admin User
+### Default admin account
 
-When the backend starts for the first time, it automatically creates an admin account:
-
-- **Email**: `admin@example.com`
-- **Password**: `admin123`
+| Email | Password |
+|---|---|
+| `admin@example.com` | `admin123` |
 
 ---
 
-## Example API Requests
+## Table of Contents
 
-### Create a user
+1. [Getting Started](#getting-started)
+2. [Features](#features)
+3. [Pages](#pages)
+4. [API Reference](#api-reference)
+5. [Models](#models)
+6. [Project Structure](#project-structure)
+7. [Configuration](#configuration)
+8. [Authors](#authors)
 
-```bash
-curl -X POST "http://127.0.0.1:5000/api/v1/users/" \
--H "Content-Type: application/json" \
--d '{
-  "first_name": "Alice",
-  "last_name": "User",
-  "email": "alice@example.com",
-  "password": "password123"
-}'
+---
+
+## Features
+
+### For everyone
+- Browse all listed places with live stats (place count, review count, average rating)
+- Filter places by **city** and **max price per night**
+- View full place details — description, amenities, location, owner, reviews
+- **Light / dark mode** toggled by the 🌸 button, persisted in `localStorage`
+- Graceful fallback to mock data when the API is unreachable
+
+### For registered users
+- **Create an account** with GDPR consent at registration
+- **List a place** — title, city, price, description, coordinates, image URL, amenities
+- **Delete your place** from its detail page or your profile
+- **Write and delete reviews** on places you've visited
+- **Request a booking** for a specific date on any place you don't own
+- **Receive notifications** when a booking is approved or denied
+- **Public profiles** — click any host or reviewer name to view their profile
+- **Delete your account** — places removed, reviews anonymised as "Deleted User"
+
+### For place owners
+- **Manage incoming booking requests** — approve or deny from your profile
+- **Notification badge** on the nav bar when a new booking request arrives
+
+### For admins
+- Full access to delete any place or review
+- **Admin panel** on the profile page to create new amenities
+
+### Legal & privacy
+- Cookie consent banner (GDPR-compliant, choice stored in `localStorage`)
+- Full [Privacy Policy](frontend/privacy.html) and [Terms of Service](frontend/terms.html) pages
+
+---
+
+## Pages
+
+| Page | URL | Auth required |
+|---|---|---|
+| Home | `index.html` | No |
+| Sign in | `login.html` | No |
+| Register | `register.html` | No |
+| Place details | `place.html?id=<id>` | No (review & booking need auth) |
+| Add review | `add_review.html?id=<id>` | Yes |
+| Add place | `add_place.html` | Yes |
+| My account / public profile | `profile.html` / `profile.html?id=<id>` | Own profile needs auth |
+| Privacy Policy | `privacy.html` | No |
+| Terms of Service | `terms.html` | No |
+
+### Profile page behaviour
+
+- **Own profile** (`profile.html` with no `?id` or your own id) — shows stats, notifications, booking requests, booking history, places, reviews, delete account button. Admin users also see the amenity creation panel.
+- **Public profile** (`profile.html?id=<other_id>`) — shows the user's places and reviews only. No personal data, no actions.
+
+---
+
+## API Reference
+
+All endpoints are prefixed with `/api/v1`.  
+Protected routes require `Authorization: Bearer <JWT>`.
+
+### Authentication
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/auth/login` | No | Returns a JWT access token |
+
+### Users
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/users/` | No | Register a new user |
+| GET | `/users/` | No | List all users |
+| GET | `/users/<id>` | No | Get a user by ID |
+| PUT | `/users/<id>` | Yes | Update own profile (admin: any user) |
+| DELETE | `/users/<id>` | Yes | Soft-delete own account (admin: any) |
+
+### Places
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/places/` | Yes | Create a place |
+| GET | `/places/` | No | List all places (includes city, image_url, price) |
+| GET | `/places/<id>` | No | Get place details |
+| PUT | `/places/<id>` | Yes | Update a place (owner or admin) |
+| DELETE | `/places/<id>` | Yes | Delete a place (owner or admin) |
+| GET | `/places/<id>/reviews` | No | Get all reviews for a place |
+| GET | `/places/<id>/amenities` | No | Get amenities for a place |
+| POST | `/places/<id>/amenities` | Yes | Associate amenities with a place |
+
+### Reviews
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/reviews/` | Yes | Submit a review |
+| GET | `/reviews/` | No | List all reviews |
+| GET | `/reviews/<id>` | No | Get a review |
+| PUT | `/reviews/<id>` | Yes | Update a review (author or admin) |
+| DELETE | `/reviews/<id>` | Yes | Delete a review (author or admin) |
+
+### Amenities
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/amenities/` | Yes (admin) | Create an amenity |
+| GET | `/amenities/` | No | List all amenities |
+| GET | `/amenities/<id>` | No | Get an amenity |
+| PUT | `/amenities/<id>` | Yes (admin) | Update an amenity |
+
+### Bookings
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/bookings/` | Yes | Request a booking for a place |
+| GET | `/bookings/` | Yes | Get own booking requests + requests on own places |
+| GET | `/bookings/notifications` | Yes | Get unread notifications (owner & guest) |
+| PUT | `/bookings/<id>` | Yes | Approve or deny a request (place owner or admin) |
+| PUT | `/bookings/<id>/seen` | Yes | Mark a notification as seen |
+
+---
+
+## Models
+
+### User
+| Field | Type | Notes |
+|---|---|---|
+| `id` | UUID | Primary key |
+| `first_name` | String(50) | Required |
+| `last_name` | String(50) | Required |
+| `email` | String(120) | Required, unique |
+| `password` | String(128) | Bcrypt-hashed |
+| `is_admin` | Boolean | Default false |
+| `is_deleted` | Boolean | Soft-delete flag |
+
+### Place
+| Field | Type | Notes |
+|---|---|---|
+| `id` | UUID | Primary key |
+| `title` | String(100) | Required |
+| `description` | String(255) | Optional |
+| `price` | Float | Must be > 0 |
+| `latitude` | Float | −90 to 90 |
+| `longitude` | Float | −180 to 180 |
+| `city` | String(100) | Optional |
+| `image_url` | String(500) | Optional |
+| `owner_id` | FK → User | |
+
+### Review
+| Field | Type | Notes |
+|---|---|---|
+| `id` | UUID | Primary key |
+| `text` | String | Required, non-empty |
+| `rating` | Integer | 1 to 5 |
+| `user_id` | FK → User | |
+| `place_id` | FK → Place | |
+
+### Booking
+| Field | Type | Notes |
+|---|---|---|
+| `id` | UUID | Primary key |
+| `place_id` | FK → Place | |
+| `user_id` | FK → User | |
+| `date` | String | YYYY-MM-DD |
+| `status` | String | `pending` / `approved` / `denied` |
+| `owner_seen` | Boolean | Notification flag for owner |
+| `guest_seen` | Boolean | Notification flag for guest |
+
+### Amenity
+| Field | Type | Notes |
+|---|---|---|
+| `id` | UUID | Primary key |
+| `name` | String(50) | Required |
+
+**Relationships:** User → many Places · User → many Reviews · Place → many Reviews · Place ↔ many Amenities (via `place_amenity` association table) · User → many Bookings · Place → many Bookings
+
+---
+
+## Project Structure
+
+```
+part4/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py          # App factory, CORS, JWT, namespace registration
+│   │   ├── api/v1/
+│   │   │   ├── auth.py
+│   │   │   ├── users.py
+│   │   │   ├── places.py
+│   │   │   ├── reviews.py
+│   │   │   ├── amenities.py
+│   │   │   └── bookings.py      # Booking + notification endpoints
+│   │   ├── models/
+│   │   │   ├── base.py          # UUID primary key, timestamps
+│   │   │   ├── user.py
+│   │   │   ├── place.py
+│   │   │   ├── review.py
+│   │   │   ├── amenity.py
+│   │   │   ├── booking.py
+│   │   │   └── association.py   # Place ↔ Amenity join table
+│   │   ├── services/
+│   │   │   ├── facade.py        # All business logic
+│   │   │   └── repositories/    # One repo per model
+│   │   └── persistence/
+│   │       └── repository.py    # SQLAlchemyRepository base class
+│   ├── config.py
+│   ├── requirements.txt
+│   └── run.py                   # Entry point — creates tables, bootstraps admin
+├── frontend/
+│   ├── index.html               # Home — place listing + filters
+│   ├── login.html
+│   ├── register.html            # Includes GDPR consent checkbox
+│   ├── place.html               # Place detail + booking form + reviews
+│   ├── add_place.html           # Authenticated place creation form
+│   ├── add_review.html          # Standalone review page
+│   ├── profile.html             # Own profile + public profile
+│   ├── privacy.html             # GDPR Privacy Policy
+│   ├── terms.html               # Terms of Service
+│   ├── styles.css               # Full theme, responsive layout, components
+│   ├── scripts.js               # All frontend logic (router, API calls, UI)
+│   ├── petals.js                # Sakura petal background animation
+│   └── images/
+│       ├── logo.svg
+│       └── icon.svg
+└── seed.sh                      # Populates DB via the API (idempotent)
 ```
 
-### Login
+---
 
-```bash
-curl -X POST "http://127.0.0.1:5000/api/v1/auth/login" \
--H "Content-Type: application/json" \
--d '{
-  "email": "admin@example.com",
-  "password": "admin123"
-}'
+## Configuration
+
+**`config.py`**
+
+| Key | Value |
+|---|---|
+| `SECRET_KEY` | Env var `SECRET_KEY`, falls back to `default_secret_key` |
+| `DEBUG` | `True` |
+| `SQLALCHEMY_DATABASE_URI` | `sqlite:///development.db` |
+
+**CORS** — the backend only accepts requests from `http://localhost:5500` and `http://127.0.0.1:5500`. The frontend **must** be served on port `5500`.
+
+**Frontend API base URL** — set at the top of `scripts.js`:
+```js
+const API_URL = 'http://127.0.0.1:5000';
 ```
 
-### Create an amenity (admin only)
+### Resetting the database
+
+If you change any model (schema change), drop and reseed:
 
 ```bash
-curl -X POST "http://127.0.0.1:5000/api/v1/amenities/" \
--H "Authorization: Bearer <TOKEN>" \
--H "Content-Type: application/json" \
--d '{
-  "name": "Rooftop Terrace"
-}'
+pkill -f "python run.py"
+rm part4/backend/instance/development.db
+cd part4/backend && python run.py &
+# wait for "Running on http://127.0.0.1:5000"
+cd /path/to/holbertonschool-hbnb && bash part4/seed.sh
 ```
 
-### Create a place
+---
 
-```bash
-curl -X POST "http://127.0.0.1:5000/api/v1/places/" \
--H "Authorization: Bearer <TOKEN>" \
--H "Content-Type: application/json" \
--d '{
-  "title": "Sakura Villa",
-  "description": "A serene garden suite with heated tatami floors.",
-  "price": 80,
-  "latitude": 35.011636,
-  "longitude": 135.768029,
-  "amenities": []
-}'
+## Architecture
+
+```
+Browser
+  └── fetch() calls
+        └── Flask-RESTX (API layer)
+              └── HBnBFacade (business logic)
+                    └── SQLAlchemy Repositories
+                          └── SQLite database
 ```
 
-### Submit a review
+The frontend is a **static client** — no framework, no build step. All pages share `scripts.js`, which acts as a router based on `window.location.pathname`.
 
-```bash
-curl -X POST "http://127.0.0.1:5000/api/v1/reviews/" \
--H "Authorization: Bearer <TOKEN>" \
--H "Content-Type: application/json" \
--d '{
-  "text": "An unforgettable stay.",
-  "rating": 5,
-  "place_id": "<PLACE_ID>"
-}'
-```
+JWT tokens are decoded client-side (`atob(token.split('.')[1])`) to read `sub` (user ID) and `is_admin` without an extra API call.
 
 ---
 
 ## Authors
 
-Lucas Nevano — backend  
-Allix Robin — backend & frontend
+**Lucas Nevano** — backend architecture  
+**Allix Robin** — backend & frontend
