@@ -4,27 +4,75 @@
 
 ---
 
-## Quick Start
+## Getting Started
+
+### Prerequisites
+
+Make sure the following are installed on your machine before anything else:
+
+- **Python 3.8+** — check with `python3 --version`
+- **pip** — check with `pip --version`
+- **Git** — check with `git --version`
+- A modern web browser (Chrome, Firefox, Edge…)
+
+---
+
+### Step 1 — Clone the repository
 
 ```bash
-# 1 — Install backend dependencies
+git clone https://github.com/LucasN-ux/holbertonschool-hbnb.git
+cd holbertonschool-hbnb
+```
+
+---
+
+### Step 2 — Install backend dependencies
+
+```bash
 cd part4/backend
 pip install -r requirements.txt
+```
 
-# 2 — Start the backend (creates DB tables + admin user on first run)
+This installs Flask, Flask-RESTX, Flask-JWT-Extended, Flask-Bcrypt, Flask-CORS, Flask-SQLAlchemy, and email-validator.
+
+---
+
+### Step 3 — Start the backend
+
+```bash
 python run.py
+```
 
-# 3 — In a separate terminal, seed the database
-cd /path/to/holbertonschool-hbnb
-bash part4/seed.sh
+You should see:
 
-# 4 — Serve the frontend
+```
+* Running on http://127.0.0.1:5000
+```
+
+Leave this terminal open. The backend must stay running for the frontend to work.
+
+> On first launch, the app automatically creates the SQLite database and an admin user. The database is already included in the repository so all data is ready immediately.
+
+---
+
+### Step 4 — Serve the frontend
+
+Open a **second terminal**, then:
+
+```bash
 cd part4/frontend
 python3 -m http.server 5500
 ```
 
-Open **http://127.0.0.1:5500** in your browser.  
-Swagger UI is available at **http://127.0.0.1:5000**.
+---
+
+### Step 5 — Open the app
+
+Go to **http://127.0.0.1:5500** in your browser.
+
+The API's Swagger documentation is available at **http://127.0.0.1:5000**.
+
+---
 
 ### Default admin account
 
@@ -36,13 +84,14 @@ Swagger UI is available at **http://127.0.0.1:5000**.
 
 ## Table of Contents
 
-1. [Features](#features)
-2. [Pages](#pages)
-3. [API Reference](#api-reference)
-4. [Models](#models)
-5. [Project Structure](#project-structure)
-6. [Configuration](#configuration)
-7. [Authors](#authors)
+1. [Getting Started](#getting-started)
+2. [Features](#features)
+3. [Pages](#pages)
+4. [API Reference](#api-reference)
+5. [Models](#models)
+6. [Project Structure](#project-structure)
+7. [Configuration](#configuration)
+8. [Authors](#authors)
 
 ---
 
