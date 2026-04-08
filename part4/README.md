@@ -39,6 +39,8 @@ This installs Flask, Flask-RESTX, Flask-JWT-Extended, Flask-Bcrypt, Flask-CORS, 
 
 ### Step 3 — Start the backend
 
+While still on the path part4/backend, you will start the app with the following command : 
+
 ```bash
 python run.py
 ```
