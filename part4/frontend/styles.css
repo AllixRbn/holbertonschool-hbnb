@@ -119,6 +119,7 @@ html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
 }
 
 body {
@@ -1148,6 +1149,7 @@ button.details-button:active {
     justify-content: center;
     padding: 48px 24px;
     position: relative;
+    overflow: hidden;
 }
 
 /* Ambient glow */
@@ -1486,6 +1488,11 @@ button.details-button:active {
 ───────────────────────────────────────────── */
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes navSlideDown {
+    from { opacity: 0; transform: translateY(-8px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -1855,10 +1862,17 @@ button.details-button:active {
     :root { --pad: 16px; }
     main { padding-bottom: 1.5rem; }
 
-    /* Show hamburger, hide desktop nav */
-    .hamburger { display: flex; }
+    /* Show hamburger — absolutely pinned so nav width can never push it off-screen */
+    .hamburger {
+        display: flex;
+        position: absolute;
+        right: var(--pad);
+        top: 50%;
+        transform: translateY(-50%);
+    }
 
     nav {
+        display: none;
         position: fixed;
         top: var(--nav-h);
         left: 0;
@@ -1867,24 +1881,14 @@ button.details-button:active {
         flex-direction: column;
         align-items: stretch;
         gap: 6px;
-        padding: 0 var(--pad);
-        max-height: 0;
-        overflow: hidden;
+        padding: 14px var(--pad) 20px;
         background: var(--surface-2);
         border-bottom: 1px solid var(--glass-border);
-        opacity: 0;
-        pointer-events: none;
-        transition: max-height 0.38s var(--ease), padding 0.38s var(--ease), opacity 0.28s var(--ease);
+        box-shadow: var(--sh-sm);
+        animation: navSlideDown 0.28s var(--ease) both;
     }
 
-    nav.open {
-        max-height: 380px;
-        padding: 14px var(--pad) 20px;
-        opacity: 1;
-        pointer-events: auto;
-        background: var(--surface-2);
-        box-shadow: var(--sh-sm);
-    }
+    nav.open { display: flex; }
 
     /* Restore Home link that was previously hidden */
     nav a:not(.login-button):not(.logout-button) {
@@ -1919,18 +1923,13 @@ button.details-button:active {
     .hero-stats { gap: 18px; margin-top: 24px; }
     .hero-stat strong { font-size: 1.4rem; }
 
-    /* Filter — horizontal scroll on mobile */
+    /* Filter — stack vertically on mobile, wrap pills */
     #filter {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
         margin: 0 0 20px;
-        padding: 0 var(--pad) 4px;
-        gap: 10px;
+        padding: 0 var(--pad);
     }
-    #filter::-webkit-scrollbar { display: none; }
-    .filter-pills { flex-wrap: nowrap; flex-shrink: 0; }
+    .filter-row { flex-direction: column; gap: 16px; }
+    .filter-pills { flex-wrap: wrap; }
 
     /* Place detail */
     .place-hero-image { width: calc(100% - 32px); height: 220px; margin: 20px 16px 0; }
