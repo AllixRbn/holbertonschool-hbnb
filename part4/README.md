@@ -20,7 +20,7 @@ Make sure the following are installed on your machine before anything else:
 ### Step 1 — Clone the repository
 
 ```bash
-git clone https://github.com/LucasN-ux/holbertonschool-hbnb.git
+git clone https://github.com/AllixRbn/holbertonschool-hbnb.git
 cd holbertonschool-hbnb
 ```
 
