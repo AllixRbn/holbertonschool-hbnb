@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBnB — Add a place</title>
+    <link rel="icon" href="images/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="petals-container" aria-hidden="true"></div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header>
+        <div class="header-container">
+            <img src="images/logo.svg" alt="HBnB logo" class="logo">
+            <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="add_place.html" id="add-place-link" style="display:none;">Add Place</a>
+                <a href="profile.html" id="profile-link" style="display:none;">My Account</a>
+                <a href="login.html" id="login-link" class="login-button">Login</a>
+                <button id="logout-btn" class="logout-button" style="display:none;" type="button">Logout</button>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌸</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="form-page-section">
+            <h2 class="form-page-title">List your place</h2>
+            <form id="add-place-form" class="form form--wide">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title">Title <span class="required-star">*</span></label>
+                        <input type="text" id="title" name="title"
+                               placeholder="e.g. Sakura Villa" required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City <span class="required-star">*</span></label>
+                        <input type="text" id="city" name="city"
+                               placeholder="e.g. Kyoto" required maxlength="100">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Price per night ($) <span class="required-star">*</span></label>
+                        <input type="number" id="price" name="price"
+                               placeholder="e.g. 80" min="1" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="image-url">Image URL</label>
+                        <input type="url" id="image-url" name="image-url"
+                               placeholder="https://…">
+                    </div>
+                </div>
+
+                <img id="image-preview" src="" alt="Preview"
+                     style="display:none;width:100%;max-height:200px;object-fit:cover;
+                            border-radius:var(--r-sm);margin-bottom:8px;">
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description"
+                              placeholder="Describe what makes your place special…"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="latitude">Latitude <span class="required-star">*</span></label>
+                        <input type="number" id="latitude" name="latitude"
+                               placeholder="e.g. 35.0116" step="any" min="-90" max="90" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="longitude">Longitude <span class="required-star">*</span></label>
+                        <input type="number" id="longitude" name="longitude"
+                               placeholder="e.g. 135.7681" step="any" min="-180" max="180" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Amenities</label>
+                    <div id="amenities-checkboxes" class="amenity-checkboxes">
+                        <p class="muted-text">Loading amenities…</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-button">Publish place</button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 HBnB. All rights reserved. · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></p>
+    </footer>
+
+    <script src="petals.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>

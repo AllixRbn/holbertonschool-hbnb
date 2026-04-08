@@ -21,6 +21,8 @@
             </button>
             <nav>
                 <a href="index.html">Home</a>
+                <a href="add_place.html" id="add-place-link" style="display:none;">Add Place</a>
+                <a href="profile.html" id="profile-link" style="display:none;">My Account</a>
                 <!-- #login-link: required — shown/hidden by scripts.js based on auth -->
                 <a href="login.html" id="login-link" class="login-button">Login</a>
                 <button id="logout-btn" class="logout-button" style="display:none;" type="button">Logout</button>
@@ -48,6 +50,19 @@
             <h2>Reviews</h2>
         </section>
 
+        <!-- ═══ BOOKING REQUEST ═══ -->
+        <!-- Shown to authenticated non-owners — controlled by scripts.js    -->
+        <section id="booking-section" style="display:none;">
+            <h2>Request a booking</h2>
+            <form id="booking-form" class="form">
+                <div class="form-group">
+                    <label for="booking-date">Requested date</label>
+                    <input type="date" id="booking-date" name="booking-date" required>
+                </div>
+                <button type="submit" class="details-button">Request Booking</button>
+            </form>
+        </section>
+
         <!-- ═══ ADD REVIEW ═══                                              -->
         <!-- id="add-review": required · class="add-review": required        -->
         <!-- class="form": required on the form element                       -->
@@ -67,16 +82,22 @@
                 </div>
 
                 <div class="form-group">
-                    <!-- id="rating": required on place.html -->
-                    <label for="rating">Rating</label>
-                    <select id="rating" name="rating" required>
-                        <option value="">Select a rating</option>
-                        <option value="1">1 &mdash; Poor</option>
-                        <option value="2">2 &mdash; Fair</option>
-                        <option value="3">3 &mdash; Good</option>
-                        <option value="4">4 &mdash; Very good</option>
-                        <option value="5">5 &mdash; Excellent</option>
-                    </select>
+                    <label>Rating</label>
+                    <div class="star-rating" role="radiogroup" aria-label="Rating">
+                        <input type="radio" id="r5" name="inline-star" value="5">
+                        <label for="r5" aria-label="5 stars — Excellent">★</label>
+                        <input type="radio" id="r4" name="inline-star" value="4">
+                        <label for="r4" aria-label="4 stars — Very good">★</label>
+                        <input type="radio" id="r3" name="inline-star" value="3">
+                        <label for="r3" aria-label="3 stars — Good">★</label>
+                        <input type="radio" id="r2" name="inline-star" value="2">
+                        <label for="r2" aria-label="2 stars — Fair">★</label>
+                        <input type="radio" id="r1" name="inline-star" value="1">
+                        <label for="r1" aria-label="1 star — Poor">★</label>
+                    </div>
+                    <span class="star-label-text" id="inline-star-label">&nbsp;</span>
+                    <!-- hidden fallback for scripts.js compatibility -->
+                    <select id="rating" name="rating" style="display:none;" aria-hidden="true"></select>
                 </div>
 
                 <!-- class="details-button": required on submit -->
@@ -88,7 +109,7 @@
 
     <!-- ═══ FOOTER ═══ -->
     <footer>
-        <p>&copy; 2024 HBnB. All rights reserved.</p>
+        <p>&copy; 2026 HBnB. All rights reserved. · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></p>
     </footer>
 
     <script src="petals.js"></script>

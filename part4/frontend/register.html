@@ -20,6 +20,8 @@
             </button>
             <nav>
                 <a href="index.html">Home</a>
+                <a href="add_place.html" id="add-place-link" style="display:none;">Add Place</a>
+                <a href="profile.html" id="profile-link" style="display:none;">My Account</a>
                 <a href="login.html" id="login-link" class="login-button">Login</a>
                 <button id="logout-btn" class="logout-button" style="display:none;" type="button">Logout</button>
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌸</button>
@@ -89,6 +91,16 @@
                         required>
                 </div>
 
+                <div class="consent-box">
+                    <input type="checkbox" id="gdpr-consent" required>
+                    <label for="gdpr-consent">
+                        I agree to the
+                        <a href="privacy.html" target="_blank">Privacy Policy</a>
+                        and <a href="terms.html" target="_blank">Terms of Service</a>,
+                        and consent to HBnB processing my data for account management.
+                    </label>
+                </div>
+
                 <button type="submit" class="login-button">Create account</button>
 
                 <p class="form-switch">
@@ -100,7 +112,7 @@
 
     <!-- ═══ FOOTER ═══ -->
     <footer>
-        <p>&copy; 2024 HBnB. All rights reserved.</p>
+        <p>&copy; 2026 HBnB. All rights reserved. · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></p>
     </footer>
 
     <script src="petals.js"></script>

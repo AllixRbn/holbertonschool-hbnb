@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBnB — My account</title>
+    <link rel="icon" href="images/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="petals-container" aria-hidden="true"></div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header>
+        <div class="header-container">
+            <img src="images/logo.svg" alt="HBnB logo" class="logo">
+            <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="add_place.html" id="add-place-link" style="display:none;">Add Place</a>
+                <a href="profile.html" id="profile-link" style="display:none;">My Account</a>
+                <a href="login.html" id="login-link" class="login-button">Login</a>
+                <button id="logout-btn" class="logout-button" style="display:none;" type="button">Logout</button>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌸</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Profile header -->
+        <section class="profile-hero" id="profile-hero">
+            <div class="profile-avatar" id="profile-avatar">?</div>
+            <div class="profile-hero-info">
+                <h1 id="profile-name">Loading…</h1>
+                <p id="profile-email" class="profile-email"></p>
+                <button id="delete-account-btn" class="delete-btn"
+                        style="display:none;margin-top:10px;">Delete my account</button>
+            </div>
+        </section>
+
+        <!-- Stats row (own profile only) -->
+        <section class="profile-stats" id="profile-stats">
+            <div class="profile-stat">
+                <strong id="stat-places">—</strong>
+                <span>Places listed</span>
+            </div>
+            <div class="profile-stat">
+                <strong id="stat-reviews-written">—</strong>
+                <span>Reviews written</span>
+            </div>
+            <div class="profile-stat">
+                <strong id="stat-avg-rating">—</strong>
+                <span>Avg rating received</span>
+            </div>
+            <div class="profile-stat">
+                <strong id="stat-reviews-received">—</strong>
+                <span>Reviews received</span>
+            </div>
+        </section>
+
+        <!-- Notifications (own profile only) -->
+        <section class="profile-section" id="notifications-section" style="display:none;">
+            <h2>Notifications</h2>
+            <div id="profile-notifications"></div>
+        </section>
+
+        <!-- Incoming booking requests (owner, own profile only) -->
+        <section class="profile-section" id="owner-bookings-section" style="display:none;">
+            <h2>Booking requests</h2>
+            <div id="owner-bookings"></div>
+        </section>
+
+        <!-- My booking requests (guest, own profile only) -->
+        <section class="profile-section" id="guest-bookings-section" style="display:none;">
+            <h2>My bookings</h2>
+            <div id="guest-bookings"></div>
+        </section>
+
+        <!-- Places -->
+        <section class="profile-section">
+            <div class="profile-section-header">
+                <h2 id="places-section-title">My places</h2>
+                <a href="add_place.html" class="login-button" id="add-place-btn">+ Add place</a>
+            </div>
+            <div id="profile-places" class="profile-places-grid"></div>
+        </section>
+
+        <!-- Reviews -->
+        <section class="profile-section">
+            <h2 id="reviews-section-title">My reviews</h2>
+            <div id="profile-reviews"></div>
+        </section>
+
+        <!-- Admin panel (own profile + admin only) -->
+        <section class="profile-section" id="admin-panel" style="display:none;">
+            <h2>Admin panel</h2>
+            <div class="admin-panel-grid">
+                <div class="admin-card">
+                    <h3>Add amenity</h3>
+                    <form id="admin-amenity-form" class="form admin-form">
+                        <div class="form-group">
+                            <label for="new-amenity-name">Amenity name</label>
+                            <input type="text" id="new-amenity-name"
+                                   placeholder="e.g. Rooftop Pool" maxlength="100" required>
+                        </div>
+                        <button type="submit" class="login-button">Add amenity</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 HBnB. All rights reserved. · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></p>
+    </footer>
+
+    <script src="petals.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>

@@ -99,9 +99,11 @@ create_amenity() {
 }
 
 # Create place (must call while logged in as owner); return id
+# Args: token title desc price lat lng city image_url [amenity_ids...]
 create_place() {
     local token="$1" title="$2" desc="$3" price="$4" lat="$5" lng="$6"
-    shift 6
+    local city="$7" image_url="$8"
+    shift 8
     local amenity_ids=("$@")
 
     local body resp id
@@ -114,6 +116,8 @@ print(json.dumps({
     'price':       $price,
     'latitude':    $lat,
     'longitude':   $lng,
+    'city':        '$city',
+    'image_url':   '$image_url',
     'amenities':   amenities
 }))
 PYEOF
@@ -226,36 +230,42 @@ PLACE1_ID=$(create_place "$YUKI_TOKEN" \
     "Sakura Villa" \
     "A serene Kyoto-inspired garden suite with heated tatami floors and a private tea ceremony room." \
     80 35.011636 135.768029 \
+    "Kyoto" "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&auto=format&fit=crop&q=80" \
     "$WIFI_ID" "$GARDEN_ID" "$FLOORS_ID" "$TEAROOM_ID" "$MTVIEW_ID")
 
 PLACE2_ID=$(create_place "$EMMA_TOKEN" \
     "The Blossom Loft" \
     "A crisp minimalist urban apartment with a rooftop terrace overlooking the city skyline." \
     95 35.689487 139.691711 \
+    "Tokyo" "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80" \
     "$WIFI_ID" "$ROOFTOP_ID" "$ESPRESSO_ID" "$CITYVIEW_ID")
 
 PLACE3_ID=$(create_place "$KENJI_TOKEN" \
     "Fuji Retreat" \
     "A secluded cedar cabin at the foot of Mount Fuji with a private hot tub and forest trail access." \
     60 35.360627 138.727363 \
+    "Fujinomiya" "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop&q=80" \
     "$WIFI_ID" "$FIREPLACE_ID" "$HOTTUB_ID" "$TRAIL_ID" "$BBQ_ID")
 
 PLACE4_ID=$(create_place "$SOPHIE_TOKEN" \
     "Hanami Suite" \
     "A boutique hotel suite with floor-to-ceiling cherry blossom views, daily breakfast, and full spa access." \
     110 35.021041 135.753441 \
+    "Kyoto" "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop&q=80" \
     "$WIFI_ID" "$CONCIERGE_ID" "$BREAKFAST_ID" "$SPA_ID")
 
 PLACE5_ID=$(create_place "$HANA_TOKEN" \
     "Zen Garden Cottage" \
     "A peaceful countryside escape with a meditation garden and organic breakfasts served at sunrise." \
     45 34.693738 135.502165 \
+    "Osaka" "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&auto=format&fit=crop&q=80" \
     "$WIFI_ID" "$MEDITATION_ID" "$BICYCLE_ID" "$ORGANIC_ID")
 
 PLACE6_ID=$(create_place "$LUCA_TOKEN" \
     "Momiji House" \
     "A traditional-modern fusion home with a sake bar, outdoor soaking bath, and a koi pond that glows at dusk." \
     75 34.385203 132.455293 \
+    "Hiroshima" "https://images.unsplash.com/photo-1480796927426-f609979314bd?w=800&auto=format&fit=crop&q=80" \
     "$WIFI_ID" "$TATAMI_ID" "$SAKE_ID" "$BATH_ID" "$KOI_ID")
 
 echo ""

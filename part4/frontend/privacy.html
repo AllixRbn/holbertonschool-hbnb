@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBnB — Privacy Policy</title>
+    <link rel="icon" href="images/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="petals-container" aria-hidden="true"></div>
+
+    <header>
+        <div class="header-container">
+            <img src="images/logo.svg" alt="HBnB logo" class="logo">
+            <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="add_place.html" id="add-place-link" style="display:none;">Add Place</a>
+                <a href="profile.html" id="profile-link" style="display:none;">My Account</a>
+                <a href="login.html" id="login-link" class="login-button">Login</a>
+                <button id="logout-btn" class="logout-button" style="display:none;" type="button">Logout</button>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌸</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="legal-page">
+            <h1>Privacy Policy</h1>
+            <p class="legal-date">Last updated: April 8, 2026</p>
+
+            <p>HBnB ("we", "us", "our") is committed to protecting your personal data and respecting your privacy in accordance with the General Data Protection Regulation (EU) 2016/679 (GDPR). This Privacy Policy explains what data we collect, why we collect it, how we use it, and what rights you have.</p>
+
+            <h2>1. Data Controller</h2>
+            <p>The data controller responsible for your personal data is HBnB. You can contact us at <strong>privacy@hbnb.io</strong> for any privacy-related questions or requests.</p>
+
+            <h2>2. Personal Data We Collect</h2>
+            <p>We collect only the data strictly necessary to provide our service:</p>
+            <ul>
+                <li><strong>Account data:</strong> First name, last name, email address, and a hashed password when you create an account.</li>
+                <li><strong>Content data:</strong> Places you list (title, description, location, price), reviews you write, and booking requests you make.</li>
+                <li><strong>Technical data:</strong> A session token (JWT) stored in a browser cookie for authentication purposes. No IP addresses, browser fingerprints, or tracking data are collected.</li>
+            </ul>
+
+            <h2>3. Legal Basis for Processing</h2>
+            <p>We process your personal data on the following legal bases:</p>
+            <ul>
+                <li><strong>Contract performance (Art. 6(1)(b) GDPR):</strong> Processing your name, email, and content data is necessary to provide the HBnB service (creating accounts, listing places, making bookings).</li>
+                <li><strong>Consent (Art. 6(1)(a) GDPR):</strong> You explicitly consent to our terms when registering. You may withdraw consent at any time by deleting your account.</li>
+                <li><strong>Legitimate interest (Art. 6(1)(f) GDPR):</strong> We use session cookies strictly necessary for authentication — no consent is required for these under ePrivacy Directive Art. 5(3).</li>
+            </ul>
+
+            <h2>4. Cookies</h2>
+            <p>We use only one cookie:</p>
+            <table class="legal-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Purpose</th>
+                        <th>Type</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>token</code></td>
+                        <td>Authentication — keeps you signed in</td>
+                        <td>Strictly necessary</td>
+                        <td>Session / until logout</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>We do not use analytics cookies, advertising cookies, or any third-party tracking cookies.</p>
+
+            <h2>5. How We Use Your Data</h2>
+            <ul>
+                <li>To create and manage your user account</li>
+                <li>To display your listed places to other users</li>
+                <li>To process booking requests between guests and hosts</li>
+                <li>To display reviews on place pages</li>
+                <li>To send in-app notifications about bookings</li>
+            </ul>
+            <p>We do not sell, rent, or share your personal data with any third parties for commercial purposes.</p>
+
+            <h2>6. Data Retention</h2>
+            <ul>
+                <li><strong>Active accounts:</strong> Data is retained for as long as your account exists.</li>
+                <li><strong>Deleted accounts:</strong> When you delete your account, your name and email are immediately anonymised. Your places are deleted. Reviews you wrote remain but are displayed as "Deleted User" with no personal information attached.</li>
+                <li><strong>Booking data:</strong> Retained for 1 year after the booking date for dispute resolution purposes.</li>
+            </ul>
+
+            <h2>7. Your Rights Under the GDPR</h2>
+            <p>You have the following rights regarding your personal data:</p>
+            <ul>
+                <li><strong>Right of access (Art. 15):</strong> You can request a copy of the data we hold about you.</li>
+                <li><strong>Right to rectification (Art. 16):</strong> You can update your name directly from your account settings.</li>
+                <li><strong>Right to erasure (Art. 17):</strong> You can delete your account at any time from your profile page. This anonymises your data immediately.</li>
+                <li><strong>Right to restriction of processing (Art. 18):</strong> You may request that we limit how we use your data.</li>
+                <li><strong>Right to data portability (Art. 20):</strong> You may request an export of your personal data.</li>
+                <li><strong>Right to object (Art. 21):</strong> You may object to processing based on legitimate interest.</li>
+                <li><strong>Right to withdraw consent:</strong> You may withdraw consent at any time by deleting your account.</li>
+            </ul>
+            <p>To exercise any of these rights, contact us at <strong>privacy@hbnb.io</strong>. We will respond within 30 days.</p>
+
+            <h2>8. Data Security</h2>
+            <p>Passwords are hashed using bcrypt and are never stored in plain text. Session tokens are signed JWT tokens with an expiry. All data is stored locally on our server and is not transmitted to third-party services.</p>
+
+            <h2>9. Children's Privacy</h2>
+            <p>HBnB is not directed at children under the age of 16. We do not knowingly collect personal data from minors. If you believe a minor has created an account, contact us at <strong>privacy@hbnb.io</strong>.</p>
+
+            <h2>10. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. We will notify registered users of significant changes via an in-app notification. The date at the top of this page always reflects the latest version.</p>
+
+            <h2>11. Contact & Supervisory Authority</h2>
+            <p>For any privacy concerns, contact us at <strong>privacy@hbnb.io</strong>.</p>
+            <p>If you believe we are processing your data unlawfully, you have the right to lodge a complaint with your national data protection authority (e.g. CNIL in France, ICO in the UK).</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 HBnB. All rights reserved. · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></p>
+    </footer>
+
+    <script src="petals.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>

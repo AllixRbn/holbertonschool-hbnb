@@ -133,3 +133,18 @@ class UserResource(Resource):
 
         except ValueError as e:
             return {'error': str(e)}, 400
+
+    @jwt_required()
+    @api.doc(security='Bearer Auth')
+    @api.response(200, 'Account deleted')
+    @api.response(403, 'Unauthorized')
+    @api.response(404, 'User not found')
+    def delete(self, user_id):
+        """Soft-delete a user account (own account or admin)"""
+        current_user = get_jwt_identity()
+        if not _is_admin() and user_id != current_user:
+            return {'error': 'Unauthorized'}, 403
+        ok = facade.soft_delete_user(user_id)
+        if not ok:
+            return {'error': 'User not found'}, 404
+        return {'message': 'Account deleted'}, 200

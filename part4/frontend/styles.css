@@ -1302,35 +1302,68 @@ button.details-button:active {
 /* Star rating widget */
 .star-rating {
     display: flex;
-    gap: 6px;
+    gap: 2px;
     flex-direction: row-reverse;
     justify-content: flex-end;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
-.star-rating input[type="radio"] {
-    display: none;
-}
+.star-rating input[type="radio"] { display: none; }
 
 .star-rating label {
-    font-size: 2rem;
-    color: var(--ivory-2);
+    font-size: 2.2rem;
+    color: #DDD0D5;
     cursor: pointer;
-    transition: color var(--t) var(--ease), transform var(--ts) var(--spring);
+    transition: color 0.12s ease, transform 0.18s cubic-bezier(.34,1.56,.64,1), filter 0.12s ease;
     text-transform: none;
     letter-spacing: 0;
     font-weight: 400;
-    padding: 0;
+    padding: 2px 3px;
+    line-height: 1;
+    user-select: none;
 }
 
+/* Hover fill: current star + all lower stars (siblings after in reversed DOM) */
 .star-rating label:hover,
-.star-rating label:hover ~ label,
+.star-rating label:hover ~ label {
+    color: #E8A860;
+    filter: drop-shadow(0 0 6px rgba(232,168,96,0.6));
+}
+
+/* Selected fill: the checked input's label + all lower-value labels (following siblings) */
 .star-rating input[type="radio"]:checked ~ label {
-    color: #C9944A;
+    color: #D4845A;
 }
 
 .star-rating label:hover {
-    transform: scale(1.25) rotate(-5deg);
+    transform: scale(1.35) translateY(-3px);
+    color: #F0C060;
+    filter: drop-shadow(0 0 10px rgba(240,192,96,0.7));
+}
+
+/* Pop animation on click */
+@keyframes star-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.5) rotate(-8deg); }
+    70%  { transform: scale(0.95) rotate(3deg); }
+    100% { transform: scale(1); }
+}
+
+.star-rating input[type="radio"]:checked + label {
+    animation: star-pop 0.35s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* The descriptive text below stars */
+.star-label-text {
+    display: block;
+    height: 1.2em;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--mauve);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    transition: opacity 0.2s ease;
 }
 
 
@@ -1458,7 +1491,298 @@ button.details-button:active {
 
 
 /* ─────────────────────────────────────────────
-   20. HAMBURGER BUTTON
+   20. DELETE BUTTON
+───────────────────────────────────────────── */
+.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 28px;
+    padding: 10px 20px;
+    background: none;
+    border: 1.5px solid rgba(200,60,60,0.35);
+    border-radius: 50px;
+    color: #b03030;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--t) var(--ease), border-color var(--t) var(--ease),
+                color var(--t) var(--ease), transform var(--ts) var(--spring);
+}
+
+.delete-btn:hover {
+    background: rgba(200,50,50,0.08);
+    border-color: rgba(200,50,50,0.60);
+    color: #c03030;
+    transform: translateY(-1px);
+}
+
+/* Small variant used inside review cards */
+.delete-btn--sm {
+    margin-top: 0;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    border-radius: 8px;
+}
+
+[data-theme="dark"] .delete-btn {
+    border-color: rgba(220,80,80,0.35);
+    color: #e07070;
+}
+
+[data-theme="dark"] .delete-btn:hover {
+    background: rgba(220,80,80,0.12);
+    border-color: rgba(220,80,80,0.60);
+}
+
+/* Review header needs space for the delete button */
+.review-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+
+/* ─────────────────────────────────────────────
+   20a. WIDE FORM PAGE (add_place)
+───────────────────────────────────────────── */
+.form-page-section {
+    max-width: 780px;
+    margin: 48px auto 64px;
+    padding: 0 var(--pad);
+    animation: fadeUp 0.6s var(--ease) both;
+}
+
+.form-page-title {
+    font-family: var(--serif);
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+}
+
+.form--wide {
+    max-width: 100% !important;
+    padding: 36px 32px 32px !important;
+}
+
+
+/* ─────────────────────────────────────────────
+   20b. AMENITY CHECKBOXES (add_place form)
+───────────────────────────────────────────── */
+.amenity-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.amenity-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1.5px solid var(--glass-border);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: border-color var(--t) var(--ease), background var(--t) var(--ease);
+    user-select: none;
+}
+
+.amenity-checkbox:hover {
+    border-color: var(--rose);
+    background: var(--blush);
+}
+
+.amenity-checkbox input[type="checkbox"] {
+    accent-color: var(--mauve);
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.amenity-checkbox input:checked + span {
+    color: var(--mauve);
+    font-weight: 600;
+}
+
+.amenity-checkbox:has(input:checked) {
+    border-color: var(--mauve);
+    background: var(--blush);
+}
+
+.required-star { color: var(--rose); margin-left: 2px; }
+.muted-text { color: var(--faint); font-size: 0.875rem; }
+
+
+/* ─────────────────────────────────────────────
+   20c. PROFILE PAGE
+───────────────────────────────────────────── */
+.profile-hero {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 48px var(--pad) 32px;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    animation: fadeUp 0.6s var(--ease) both;
+}
+
+.profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose), var(--mauve));
+    color: #fff;
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: var(--sh);
+}
+
+.profile-hero-info h1 {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+}
+
+.profile-email {
+    color: var(--faint);
+    font-size: 0.875rem;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 0;
+    max-width: var(--max-w);
+    margin: 0 auto 40px;
+    padding: 0 var(--pad);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    overflow: hidden;
+    animation: fadeUp 0.6s 0.08s var(--ease) both;
+}
+
+.profile-stat {
+    flex: 1;
+    text-align: center;
+    padding: 22px 16px;
+    border-right: 1px solid var(--glass-border);
+}
+
+.profile-stat:last-child { border-right: none; }
+
+.profile-stat strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    color: var(--mauve);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.profile-stat span {
+    font-size: 0.72rem;
+    color: var(--faint);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 500;
+}
+
+.profile-section {
+    max-width: var(--max-w);
+    margin: 0 auto 48px;
+    padding: 0 var(--pad);
+    animation: fadeUp 0.6s 0.14s var(--ease) both;
+}
+
+.profile-section h2 {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.profile-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.profile-section-header h2 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.profile-section-header .login-button {
+    padding: 8px 18px !important;
+    font-size: 0.82rem !important;
+    border-radius: 50px !important;
+}
+
+.profile-places-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.profile-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+.profile-card-actions .details-button {
+    flex: 1;
+    text-align: center;
+}
+
+.profile-review-card { margin: 0 0 12px; }
+
+.profile-review-place {
+    font-weight: 600;
+    color: var(--mauve);
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.profile-review-place:hover { text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 680px) {
+    .profile-hero { padding: 32px var(--pad) 24px; gap: 16px; }
+    .profile-avatar { width: 54px; height: 54px; font-size: 1.3rem; }
+    .profile-hero-info h1 { font-size: 1.5rem; }
+    .profile-stats { flex-wrap: wrap; }
+    .profile-stat { min-width: 50%; border-bottom: 1px solid var(--glass-border); }
+    .profile-stat:nth-child(even) { border-right: none; }
+    .form-page-section { margin-top: 24px; }
+    .form--wide { padding: 24px 18px 22px !important; }
+}
+
+
+/* ─────────────────────────────────────────────
+   20d. HAMBURGER BUTTON
 ───────────────────────────────────────────── */
 .hamburger {
     display: none;
@@ -1546,9 +1870,7 @@ button.details-button:active {
         padding: 0 var(--pad);
         max-height: 0;
         overflow: hidden;
-        background: var(--surface);
-        backdrop-filter: var(--blur);
-        -webkit-backdrop-filter: var(--blur);
+        background: var(--surface-2);
         border-bottom: 1px solid var(--glass-border);
         opacity: 0;
         pointer-events: none;
@@ -1560,6 +1882,8 @@ button.details-button:active {
         padding: 14px var(--pad) 20px;
         opacity: 1;
         pointer-events: auto;
+        background: var(--surface-2);
+        box-shadow: var(--sh-sm);
     }
 
     /* Restore Home link that was previously hidden */
@@ -1645,3 +1969,479 @@ button.details-button:active {
 
     .filter-pill { padding: 6px 14px; font-size: 0.78rem; }
 }
+
+/* ─────────────────────────────────────────────
+   21. BOOKING SECTION (place.html)
+───────────────────────────────────────────── */
+#booking-section {
+    max-width: 780px;
+    margin: 0 auto 32px;
+    padding: 28px 32px;
+    background: var(--surface-2);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r);
+    box-shadow: var(--sh-sm);
+}
+
+#booking-section h2 {
+    margin: 0 0 20px;
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    color: var(--deep);
+}
+
+#booking-section input[type="date"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-sm);
+    background: var(--ivory);
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink);
+}
+
+/* ─────────────────────────────────────────────
+   22. STATUS BADGES
+───────────────────────────────────────────── */
+.status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+}
+
+.status-pending  { background: #FFF4D6; color: #8A6500; border: 1px solid #F5D87A; }
+.status-approved { background: #D6F5E6; color: #1A6B3C; border: 1px solid #7AD5A8; }
+.status-denied   { background: #FFE0E0; color: #8A1A1A; border: 1px solid #F5A0A0; }
+
+/* ─────────────────────────────────────────────
+   23. NOTIFICATION BADGE (nav)
+───────────────────────────────────────────── */
+.notif-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--mauve);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* ─────────────────────────────────────────────
+   24. NOTIFICATION CARDS (profile.html)
+───────────────────────────────────────────── */
+.notif-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--glass-border);
+    background: var(--surface-2);
+    box-shadow: var(--sh-xs);
+}
+
+.notif-owner { border-left: 4px solid var(--rose); }
+.notif-guest { border-left: 4px solid #7AD5A8; }
+
+.notif-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.notif-body {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--ink);
+    line-height: 1.5;
+}
+
+.notif-body p { margin: 0; }
+
+.notif-action {
+    flex-shrink: 0;
+    font-size: 0.82rem !important;
+    padding: 6px 14px !important;
+}
+
+/* ─────────────────────────────────────────────
+   25. BOOKING CARDS (profile.html)
+───────────────────────────────────────────── */
+.booking-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px 20px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--glass-border);
+    border-left: 4px solid var(--rose);
+    background: var(--surface-2);
+    box-shadow: var(--sh-xs);
+    transition: box-shadow var(--t) var(--ease);
+}
+
+.booking-card:hover { box-shadow: var(--sh-sm); }
+
+/* Status-colored left border */
+.booking-card[data-status="approved"] { border-left-color: #52C48A; }
+.booking-card[data-status="denied"]   { border-left-color: #E07070; }
+.booking-card[data-status="pending"]  { border-left-color: #E0B840; }
+
+.booking-info {
+    min-width: 0;
+}
+
+.booking-info p {
+    margin: 0 0 5px;
+    font-size: 0.9rem;
+    color: var(--ink);
+    line-height: 1.4;
+}
+
+.booking-info p:last-child { margin-bottom: 0; }
+
+.booking-info a {
+    color: var(--mauve);
+    text-decoration: none;
+    font-weight: 600;
+}
+.booking-info a:hover { text-decoration: underline; }
+
+.booking-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.booking-date {
+    font-size: 0.8rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.booking-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.booking-approve {
+    font-size: 0.8rem !important;
+    padding: 6px 16px !important;
+    background: linear-gradient(135deg, #52C48A, #3A9E6E) !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.booking-approve:hover { opacity: 0.88; }
+
+.booking-deny {
+    font-size: 0.8rem !important;
+    padding: 5px 14px !important;
+    background: transparent !important;
+    color: #C05050 !important;
+    border: 1px solid #E07070 !important;
+    border-radius: var(--r-sm) !important;
+    cursor: pointer;
+}
+
+.booking-deny:hover { background: #FFF0F0 !important; }
+
+@media (max-width: 600px) {
+    .booking-card  { grid-template-columns: 1fr; }
+    .booking-actions { flex-direction: row; align-items: center; }
+    .notif-card    { flex-wrap: wrap; }
+    .notif-action  { width: 100%; text-align: center; }
+}
+
+/* ─────────────────────────────────────────────
+   26. FILTER ROW (index.html)
+───────────────────────────────────────────── */
+.filter-row {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.place-city {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 400;
+}
+
+/* ─────────────────────────────────────────────
+   27. ADMIN PANEL (profile.html)
+───────────────────────────────────────────── */
+.admin-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.admin-card {
+    background: var(--surface-2);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-sm);
+    padding: 20px 24px;
+    box-shadow: var(--sh-xs);
+}
+
+.admin-card h3 {
+    margin: 0 0 16px;
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--deep);
+}
+
+.admin-form .form-group { margin-bottom: 12px; }
+
+.admin-form .login-button {
+    width: 100%;
+    margin-top: 4px;
+}
+
+/* ─────────────────────────────────────────────
+   28. COOKIE CONSENT BANNER
+───────────────────────────────────────────── */
+#cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: var(--surface-2);
+    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 -4px 24px rgba(120,48,72,0.12);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+}
+
+#cookie-banner.cookie-banner--show {
+    transform: translateY(0);
+}
+
+.cookie-banner-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px var(--pad);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.cookie-text {
+    flex: 1;
+    min-width: 240px;
+}
+
+.cookie-text strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--deep);
+    margin-bottom: 4px;
+}
+
+.cookie-text p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.cookie-text a {
+    color: var(--mauve);
+    text-decoration: underline;
+}
+
+.cookie-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.cookie-btn {
+    padding: 9px 20px;
+    border-radius: var(--r-sm);
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.cookie-btn--primary {
+    background: var(--mauve);
+    color: #fff;
+}
+
+.cookie-btn--primary:hover { opacity: 0.88; }
+
+.cookie-btn--outline {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--muted);
+}
+
+.cookie-btn--outline:hover { background: var(--blush); color: var(--deep); }
+
+@media (max-width: 600px) {
+    .cookie-banner-inner { flex-direction: column; align-items: stretch; }
+    .cookie-actions { flex-direction: column; }
+    .cookie-btn { text-align: center; }
+}
+
+/* ─────────────────────────────────────────────
+   29. LEGAL PAGES (privacy.html / terms.html)
+───────────────────────────────────────────── */
+.legal-page {
+    max-width: 780px;
+    margin: 40px auto 60px;
+    padding: 0 var(--pad);
+}
+
+.legal-page h1 {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    color: var(--deep);
+    margin-bottom: 4px;
+}
+
+.legal-date {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+}
+
+.legal-page h2 {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    color: var(--deep);
+    margin: 32px 0 8px;
+}
+
+.legal-page p, .legal-page li {
+    font-size: 0.92rem;
+    color: var(--ink);
+    line-height: 1.75;
+}
+
+.legal-page ul {
+    padding-left: 20px;
+    margin: 8px 0 12px;
+}
+
+.legal-page a {
+    color: var(--mauve);
+    text-decoration: underline;
+}
+
+.legal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.85rem;
+}
+
+.legal-table th, .legal-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--glass-border);
+}
+
+.legal-table th {
+    background: var(--ivory-2);
+    font-weight: 600;
+    color: var(--deep);
+}
+
+/* ─────────────────────────────────────────────
+   30. CONSENT CHECKBOX (register.html)
+───────────────────────────────────────────── */
+.consent-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--ivory-2);
+    border: 1px solid var(--blush-2);
+    border-radius: var(--r-sm);
+    padding: 14px 16px;
+    margin: 4px 0 8px;
+}
+
+.consent-box input[type="checkbox"] {
+    appearance: auto;
+    -webkit-appearance: auto;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    margin-top: 2px;
+    padding: 0;
+    flex-shrink: 0;
+    accent-color: var(--mauve);
+    cursor: pointer;
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+
+.consent-box label {
+    font-size: 0.83rem;
+    font-weight: 400;
+    color: var(--muted);
+    line-height: 1.6;
+    letter-spacing: 0;
+    text-transform: none;
+    cursor: pointer;
+}
+
+.consent-box a {
+    color: var(--mauve);
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+/* Footer legal links */
+footer a {
+    color: var(--faint);
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+footer a:hover { text-decoration: underline; color: var(--muted); }

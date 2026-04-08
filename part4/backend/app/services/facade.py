@@ -9,11 +9,14 @@ from app.services.repositories.user_repository import UserRepository
 from app.services.repositories.place_repository import PlaceRepository
 from app.services.repositories.review_repository import ReviewRepository
 from app.services.repositories.amenity_repository import AmenityRepository
+from app.services.repositories.booking_repository import BookingRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
+from app.models.booking import Booking
 from app import db
+import uuid as _uuid
 
 
 class HBnBFacade:
@@ -22,6 +25,7 @@ class HBnBFacade:
         self.place_repo = PlaceRepository()
         self.review_repo = ReviewRepository()
         self.amenity_repo = AmenityRepository()
+        self.booking_repo = BookingRepository()
 
     def bootstrap_admin(self):
         """Create an admin user if not exists"""
@@ -129,7 +133,9 @@ class HBnBFacade:
             price=place_data["price"],
             latitude=place_data["latitude"],
             longitude=place_data["longitude"],
-            owner=owner
+            owner=owner,
+            city=place_data.get("city"),
+            image_url=place_data.get("image_url")
         )
 
         amenities_ids = place_data.get("amenities", [])
@@ -163,7 +169,8 @@ class HBnBFacade:
                 place.add_amenity(amenity)
 
         clean_data = {}
-        for key in ["title", "description", "price", "latitude", "longitude"]:
+        for key in ["title", "description", "price", "latitude", "longitude",
+                    "city", "image_url"]:
             if key in place_data:
                 clean_data[key] = place_data[key]
                 setattr(place, key, place_data[key])
@@ -232,3 +239,65 @@ class HBnBFacade:
             return False
         self.review_repo.delete(review_id)
         return True
+
+    def delete_place(self, place_id):
+        place = self.place_repo.get(place_id)
+        if not place:
+            return False
+        self.place_repo.delete(place_id)
+        return True
+
+    def soft_delete_user(self, user_id):
+        user = self.user_repo.get(user_id)
+        if not user:
+            return False
+        for place in list(user.places):
+            self.place_repo.delete(place.id)
+        user.first_name = "Deleted"
+        user.last_name = "User"
+        user.email = f"deleted-{_uuid.uuid4()}@deleted.hbnb"
+        user.is_deleted = True
+        db.session.commit()
+        return True
+
+    # ── Bookings ─────────────────────────────
+    def create_booking(self, place_id, user_id, date):
+        booking = Booking(
+            place_id=place_id,
+            user_id=user_id,
+            date=date
+        )
+        self.booking_repo.add(booking)
+        return booking
+
+    def get_booking(self, booking_id):
+        return self.booking_repo.get(booking_id)
+
+    def get_bookings_for_place(self, place_id):
+        return self.booking_repo.get_by_place(place_id)
+
+    def get_bookings_by_user(self, user_id):
+        return self.booking_repo.get_by_user(user_id)
+
+    def update_booking_status(self, booking_id, status):
+        booking = self.booking_repo.get(booking_id)
+        if not booking:
+            return None
+        booking.status = status
+        booking.guest_seen = False
+        db.session.commit()
+        return booking
+
+    def mark_owner_seen(self, booking_id):
+        booking = self.booking_repo.get(booking_id)
+        if booking:
+            booking.owner_seen = True
+            db.session.commit()
+        return booking
+
+    def mark_guest_seen(self, booking_id):
+        booking = self.booking_repo.get(booking_id)
+        if booking:
+            booking.guest_seen = True
+            db.session.commit()
+        return booking

@@ -21,6 +21,8 @@
             </button>
             <nav>
                 <a href="index.html">Home</a>
+                <a href="add_place.html" id="add-place-link" style="display:none;">Add Place</a>
+                <a href="profile.html" id="profile-link" style="display:none;">My Account</a>
                 <!-- #login-link present but hidden when authenticated (scripts.js) -->
                 <a href="login.html" id="login-link" class="login-button">Login</a>
                 <button id="logout-btn" class="logout-button" style="display:none;" type="button">Logout</button>
@@ -72,15 +74,8 @@
                         <label for="s1" aria-label="1 star">★</label>
                     </div>
 
-                    <!-- Required select (id="rating") — visually de-emphasised but present -->
-                    <select id="rating" name="rating" style="margin-top:8px;">
-                        <option value="">Or select numerically</option>
-                        <option value="1">1 &mdash; Poor</option>
-                        <option value="2">2 &mdash; Fair</option>
-                        <option value="3">3 &mdash; Good</option>
-                        <option value="4">4 &mdash; Very good</option>
-                        <option value="5">5 &mdash; Excellent</option>
-                    </select>
+                    <span class="star-label-text" id="star-rating-label">&nbsp;</span>
+                    <select id="rating" name="rating" style="display:none;" aria-hidden="true"></select>
                 </div>
 
                 <!-- class="details-button": required on submit -->
@@ -92,7 +87,7 @@
 
     <!-- ═══ FOOTER ═══ -->
     <footer>
-        <p>&copy; 2024 HBnB. All rights reserved.</p>
+        <p>&copy; 2026 HBnB. All rights reserved. · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></p>
     </footer>
 
     <script src="petals.js"></script>

@@ -21,6 +21,8 @@
             </button>
             <nav>
                 <a href="index.html">Home</a>
+                <a href="add_place.html" id="add-place-link" style="display:none;">Add Place</a>
+                <a href="profile.html" id="profile-link" style="display:none;">My Account</a>
                 <!-- #login-link: required — shown only when NOT authenticated -->
                 <a href="login.html" id="login-link" class="login-button">Login</a>
                 <!-- #logout-btn: shown only when authenticated (not a required element) -->
@@ -41,32 +43,41 @@
                 wherever your journey takes you.
             </p>
             <div class="hero-stats">
-                <div class="hero-stat"><strong>6+</strong><span>Unique Places</span></div>
-                <div class="hero-stat"><strong>26+</strong><span>Guest Reviews</span></div>
-                <div class="hero-stat"><strong>★ 4.8</strong><span>Average Rating</span></div>
+                <div class="hero-stat"><strong id="stat-hero-places">…</strong><span>Unique Places</span></div>
+                <div class="hero-stat"><strong id="stat-hero-reviews">…</strong><span>Guest Reviews</span></div>
+                <div class="hero-stat"><strong id="stat-hero-rating">…</strong><span>Average Rating</span></div>
             </div>
         </section>
 
-        <!-- Price filter section -->
-        <!-- #price-filter: required ID — hidden select present in DOM for grading -->
-        <section id="filter" aria-label="Filter places by price">
-            <label>Max price / night</label>
+        <!-- Filter section -->
+        <section id="filter" aria-label="Filter places">
 
-            <!-- Visual pill buttons that drive the hidden select -->
-            <div class="filter-pills" role="group" aria-label="Price filter">
-                <button class="filter-pill active" data-value="all"  type="button">All</button>
-                <button class="filter-pill"         data-value="10"  type="button">$10</button>
-                <button class="filter-pill"         data-value="50"  type="button">$50</button>
-                <button class="filter-pill"         data-value="100" type="button">$100</button>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>City</label>
+                    <div class="filter-pills" id="city-pills" role="group" aria-label="City filter">
+                        <button class="filter-pill active" data-city="all" type="button">All cities</button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <!-- #price-filter: required ID -->
+                    <label>Max price / night</label>
+                    <div class="filter-pills" role="group" aria-label="Price filter">
+                        <button class="filter-pill active" data-value="all"  type="button">All</button>
+                        <button class="filter-pill"        data-value="50"   type="button">$50</button>
+                        <button class="filter-pill"        data-value="100"  type="button">$100</button>
+                        <button class="filter-pill"        data-value="150"  type="button">$150</button>
+                    </div>
+                    <select id="price-filter" aria-hidden="true" tabindex="-1" style="display:none;">
+                        <option value="all">All</option>
+                        <option value="50">Up to $50</option>
+                        <option value="100">Up to $100</option>
+                        <option value="150">Up to $150</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Required select — hidden visually, present in DOM -->
-            <select id="price-filter" aria-hidden="true" tabindex="-1">
-                <option value="all">All</option>
-                <option value="10">Up to $10</option>
-                <option value="50">Up to $50</option>
-                <option value="100">Up to $100</option>
-            </select>
         </section>
 
         <!-- #places-list: required ID — place cards injected here by scripts.js -->
@@ -77,7 +88,7 @@
 
     <!-- ═══ FOOTER ═══ -->
     <footer>
-        <p>&copy; 2024 HBnB. All rights reserved.</p>
+        <p>&copy; 2026 HBnB. All rights reserved. · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></p>
     </footer>
 
     <script src="petals.js"></script>

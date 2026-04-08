@@ -15,12 +15,17 @@ class User(BaseModel):
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    is_deleted = db.Column(db.Boolean, default=False)
 
     # One-to-many relationship with Place and Review
-    places = db.relationship('Place', backref='owner', cascade='all, delete-orphan', lazy=True)
-    reviews = db.relationship('Review', backref='user', cascade='all, delete-orphan', lazy=True)
+    places = db.relationship(
+        'Place', backref='owner', cascade='all, delete-orphan', lazy=True)
+    reviews = db.relationship(
+        'Review', backref='user', cascade='all, delete-orphan', lazy=True)
 
-    def __init__(self, first_name: str, last_name: str, email: str, is_admin=False):
+    def __init__(
+            self, first_name: str, last_name: str,
+            email: str, is_admin=False):
         if not first_name or len(first_name) > 50:
             raise ValueError("Invalid first name")
         if not last_name or len(last_name) > 50:
@@ -37,7 +42,7 @@ class User(BaseModel):
     @staticmethod
     def validate_email_format(email):
         try:
-            validate_email(email)
+            validate_email(email, check_deliverability=False)
             return True
         except EmailNotValidError:
             return False
